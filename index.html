@@ -377,7 +377,9 @@
 
   const DEFAULTS = [
     { id: "default-markus",  name: "Markus Pichlhofer",  date: "1978-06-21", emoji: "🎂", colorIndex: 2 },
-    { id: "default-christa", name: "Christa Pichlhofer", date: "1977-04-22", emoji: "🌸", colorIndex: 0 }
+    { id: "default-christa", name: "Christa Pichlhofer", date: "1977-04-22", emoji: "🌸", colorIndex: 0 },
+    { id: "default-marc",    name: "Marc Pichlhofer",   date: "2007-03-23", emoji: "🎉", colorIndex: 3 },
+    { id: "default-sven",    name: "Sven Pichlhofer",   date: "2004-04-28", emoji: "🌟", colorIndex: 4 }
   ];
   let stored = localStorage.getItem("geburtstage");
   let entries = stored ? JSON.parse(stored) : [...DEFAULTS];
