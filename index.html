@@ -537,21 +537,20 @@
     if (!name) { shake("input-name"); return; }
     if (!date) { shake("input-date"); return; }
 
-    const btn = document.getElementById("btn-save");
-    btn.disabled = true;
+    // Sofort schließen, dann im Hintergrund speichern
+    const savedEditId    = editId;
+    const savedEmoji     = selectedEmoji;
+    window.closeModal();
 
     try {
-      if (editId) {
-        await fsUpdate(editId, { name, date, emoji: selectedEmoji });
+      if (savedEditId) {
+        await fsUpdate(savedEditId, { name, date, emoji: savedEmoji });
       } else {
-        await fsAdd({ name, date, emoji: selectedEmoji, colorIndex: Math.floor(Math.random() * N_COLORS) });
+        await fsAdd({ name, date, emoji: savedEmoji, colorIndex: Math.floor(Math.random() * N_COLORS) });
       }
-      window.closeModal();
       await reload();
     } catch (err) {
       alert("Fehler beim Speichern:\n" + err.message);
-    } finally {
-      btn.disabled = false;
     }
   };
 
