@@ -41,7 +41,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── HEADER ─────────────────────────────────────────────────── */
     header {
       padding: 52px 24px 0;
       max-width: 680px;
@@ -51,11 +50,7 @@
       justify-content: space-between;
     }
 
-    h1 {
-      font-size: 34px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
+    h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; }
 
     .btn-add {
       display: flex;
@@ -75,14 +70,12 @@
     .btn-add:hover  { background: var(--accent-hover); }
     .btn-add:active { transform: scale(0.96); }
 
-    /* ── MAIN LIST ──────────────────────────────────────────────── */
     main {
       max-width: 680px;
       margin: 0 auto;
       padding: 28px 24px 60px;
     }
 
-    /* ── SECTION LABELS ─────────────────────────────────────────── */
     .section-label {
       font-size: 13px;
       font-weight: 600;
@@ -93,7 +86,6 @@
     }
     .section-label:first-child { margin-top: 0; }
 
-    /* ── CARDS ──────────────────────────────────────────────────── */
     .card {
       background: var(--card);
       border-radius: var(--radius);
@@ -107,117 +99,90 @@
     }
     .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
 
-    /* Highlighted card – next birthday */
     .card.next {
       border: 1.5px solid rgba(0,122,255,0.55);
       background: rgba(0,122,255,0.035);
       box-shadow: 0 0 0 1px rgba(0,122,255,0.08), 0 4px 28px rgba(0,122,255,0.14);
     }
     .card.next:hover {
-      transform: translateY(-1px);
       box-shadow: 0 0 0 1px rgba(0,122,255,0.12), 0 8px 36px rgba(0,122,255,0.18);
     }
 
-    /* ── AVATAR ─────────────────────────────────────────────────── */
     .avatar {
       width: 52px; height: 52px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 22px;
       flex-shrink: 0;
     }
 
-    /* ── CARD CONTENT ───────────────────────────────────────────── */
     .card-info { flex: 1; min-width: 0; }
     .card-name {
-      font-size: 17px;
-      font-weight: 590;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 17px; font-weight: 590;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .card-date {
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
+    .card-date { font-size: 14px; color: var(--text-secondary); margin-top: 2px; }
 
-    /* ── COUNTDOWN ──────────────────────────────────────────────── */
     .countdown { text-align: right; flex-shrink: 0; }
-    .countdown-days {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      line-height: 1;
-    }
-    .countdown-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
-    .countdown.today .countdown-days { color: var(--accent); }
-    .countdown.soon  .countdown-days { color: #ff9f0a; }
+    .countdown-days { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; line-height: 1; }
+    .countdown-label { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .countdown.today   .countdown-days { color: var(--accent); }
+    .countdown.soon    .countdown-days { color: #ff9f0a; }
     .countdown.next-up .countdown-days { color: var(--accent); }
 
     .badge-today {
       display: inline-block;
-      background: var(--accent);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 980px;
-      margin-top: 3px;
+      background: var(--accent); color: #fff;
+      font-size: 12px; font-weight: 600;
+      padding: 3px 9px; border-radius: 980px; margin-top: 3px;
     }
 
-    /* ── DELETE BUTTON ──────────────────────────────────────────── */
     .btn-delete, .btn-edit {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 8px;
+      background: none; border: none; cursor: pointer;
+      padding: 8px; border-radius: 8px;
       color: var(--text-secondary);
       transition: color 0.15s, background 0.15s;
       flex-shrink: 0;
     }
-    .btn-delete:hover { color: var(--danger); background: rgba(255,59,48,0.1); }
-    .btn-edit:hover   { color: var(--accent); background: rgba(0,122,255,0.1); }
+    .btn-delete:hover { color: var(--danger);  background: rgba(255,59,48,0.1); }
+    .btn-edit:hover   { color: var(--accent);  background: rgba(0,122,255,0.1); }
 
-    /* ── EMPTY STATE ────────────────────────────────────────────── */
     .empty {
-      text-align: center;
-      padding: 80px 0;
-      color: var(--text-secondary);
+      text-align: center; padding: 80px 0; color: var(--text-secondary);
     }
     .empty .emoji { font-size: 52px; margin-bottom: 16px; }
     .empty p { font-size: 17px; line-height: 1.5; }
     .empty p strong { color: var(--text-primary); display: block; font-size: 20px; margin-bottom: 6px; }
 
-    /* ── AVATAR COLORS ──────────────────────────────────────────── */
-    .c0 { background: #ffd6e7; }
-    .c1 { background: #d0f0fd; }
-    .c2 { background: #d4f7d4; }
-    .c3 { background: #fff3cd; }
-    .c4 { background: #e8d5ff; }
-    .c5 { background: #ffd9b3; }
-    .c6 { background: #d1ecf1; }
-    .c7 { background: #f0f0f0; }
+    /* Loading */
+    .loading {
+      text-align: center; padding: 80px 0;
+      color: var(--text-secondary); font-size: 17px;
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--separator);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── MODAL ──────────────────────────────────────────────────── */
+    .c0 { background: #ffd6e7; } .c1 { background: #d0f0fd; }
+    .c2 { background: #d4f7d4; } .c3 { background: #fff3cd; }
+    .c4 { background: #e8d5ff; } .c5 { background: #ffd9b3; }
+    .c6 { background: #d1ecf1; } .c7 { background: #f0f0f0; }
+
+    /* Modal */
     .overlay {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.45);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
+      display: flex; align-items: flex-end; justify-content: center;
       z-index: 100;
-      opacity: 0;
-      pointer-events: none;
+      opacity: 0; pointer-events: none;
       transition: opacity 0.25s;
     }
     .overlay.visible { opacity: 1; pointer-events: all; }
@@ -226,8 +191,7 @@
       background: var(--card);
       border-radius: 20px 20px 0 0;
       padding: 8px 24px 44px;
-      width: 100%;
-      max-width: 560px;
+      width: 100%; max-width: 560px;
       transform: translateY(100%);
       transition: transform 0.35s cubic-bezier(0.34, 1.1, 0.64, 1);
     }
@@ -235,43 +199,31 @@
 
     .sheet-handle {
       width: 36px; height: 5px;
-      background: var(--separator);
-      border-radius: 3px;
+      background: var(--separator); border-radius: 3px;
       margin: 10px auto 24px;
     }
     .sheet h2 { font-size: 22px; font-weight: 700; margin-bottom: 24px; letter-spacing: -0.3px; }
 
     .field { margin-bottom: 16px; }
     .field label {
-      display: block;
-      font-size: 13px; font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      display: block; font-size: 13px; font-weight: 600;
+      color: var(--text-secondary); margin-bottom: 6px;
+      text-transform: uppercase; letter-spacing: 0.04em;
     }
     .field input {
-      width: 100%;
-      background: var(--bg);
-      border: 1.5px solid var(--separator);
-      border-radius: 12px;
-      padding: 13px 16px;
-      font-size: 16px;
-      font-family: inherit;
-      color: var(--text-primary);
-      outline: none;
+      width: 100%; background: var(--bg);
+      border: 1.5px solid var(--separator); border-radius: 12px;
+      padding: 13px 16px; font-size: 16px; font-family: inherit;
+      color: var(--text-primary); outline: none;
       transition: border-color 0.15s;
     }
     .field input:focus { border-color: var(--accent); }
 
     .emoji-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
     .emoji-btn {
-      width: 44px; height: 44px;
-      border-radius: 10px;
-      border: 2px solid transparent;
-      background: var(--bg);
-      font-size: 22px;
-      cursor: pointer;
+      width: 44px; height: 44px; border-radius: 10px;
+      border: 2px solid transparent; background: var(--bg);
+      font-size: 22px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: border-color 0.12s, transform 0.1s;
     }
@@ -280,32 +232,27 @@
 
     .sheet-actions { display: flex; gap: 10px; margin-top: 24px; }
     .btn-cancel {
-      flex: 1; padding: 14px;
-      border-radius: 12px; border: none;
-      background: var(--bg);
-      color: var(--text-primary);
-      font-size: 16px; font-weight: 590;
-      font-family: inherit; cursor: pointer;
-      transition: opacity 0.15s;
+      flex: 1; padding: 14px; border-radius: 12px; border: none;
+      background: var(--bg); color: var(--text-primary);
+      font-size: 16px; font-weight: 590; font-family: inherit; cursor: pointer;
     }
     .btn-cancel:hover { opacity: 0.7; }
     .btn-save {
-      flex: 2; padding: 14px;
-      border-radius: 12px; border: none;
+      flex: 2; padding: 14px; border-radius: 12px; border: none;
       background: var(--accent); color: #fff;
-      font-size: 16px; font-weight: 590;
-      font-family: inherit; cursor: pointer;
+      font-size: 16px; font-weight: 590; font-family: inherit; cursor: pointer;
       transition: background 0.15s, transform 0.1s;
     }
     .btn-save:hover  { background: var(--accent-hover); }
     .btn-save:active { transform: scale(0.97); }
+    .btn-save:disabled { opacity: 0.5; cursor: default; }
   </style>
 </head>
 <body>
 
 <header>
   <h1>Geburtstage</h1>
-  <button class="btn-add" onclick="openModal()">
+  <button class="btn-add" onclick="window.openModal()">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
       <path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2z"/>
     </svg>
@@ -313,10 +260,11 @@
   </button>
 </header>
 
-<main id="list-container"></main>
+<main id="list-container">
+  <div class="loading"><div class="spinner"></div>Wird geladen…</div>
+</main>
 
-<!-- Modal -->
-<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+<div class="overlay" id="overlay" onclick="window.handleOverlayClick(event)">
   <div class="sheet">
     <div class="sheet-handle"></div>
     <h2 id="modal-title">Geburtstag hinzufügen</h2>
@@ -333,40 +281,61 @@
       <div class="emoji-row" id="emoji-picker"></div>
     </div>
     <div class="sheet-actions">
-      <button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
-      <button class="btn-save"   onclick="saveEntry()">Speichern</button>
+      <button class="btn-cancel" onclick="window.closeModal()">Abbrechen</button>
+      <button class="btn-save" id="btn-save" onclick="window.saveEntry()">Speichern</button>
     </div>
   </div>
 </div>
 
-<script>
+<script type="module">
+  import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, getDocs }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ── Firebase ──────────────────────────────────────────────────────
+  const app = initializeApp({
+    apiKey:            "AIzaSyC7JeNtSTcVxeU87jtZRYb5eUCvys2Dlnk",
+    authDomain:        "geburtstage-c3e2b.firebaseapp.com",
+    projectId:         "geburtstage-c3e2b",
+    storageBucket:     "geburtstage-c3e2b.firebasestorage.app",
+    messagingSenderId: "842500657029",
+    appId:             "1:842500657029:web:a64934a372434e6805feec"
+  });
+  const db  = getFirestore(app);
+  const col = collection(db, "geburtstage");
+
+  // ── Defaults (einmalig wenn DB leer) ─────────────────────────────
+  const DEFAULTS = [
+    { name:"Markus Pichlhofer",  date:"1978-06-21", emoji:"🎂", colorIndex:2 },
+    { name:"Christa Pichlhofer", date:"1977-04-22", emoji:"🌸", colorIndex:0 },
+    { name:"Marc Pichlhofer",    date:"2007-03-23", emoji:"🎉", colorIndex:3 },
+    { name:"Sven Pichlhofer",    date:"2004-04-28", emoji:"🌟", colorIndex:4 }
+  ];
+
+  async function seedIfEmpty() {
+    const snap = await getDocs(col);
+    if (snap.empty) {
+      for (const d of DEFAULTS) await addDoc(col, d);
+    }
+  }
+  seedIfEmpty();
+
+  // ── Constants ─────────────────────────────────────────────────────
   const EMOJIS   = ["🎂","🎉","🎈","🥳","🌟","💫","🦋","🌸","🌈","🎁","🦄","🐶","🐱","🌺","🍀","⭐"];
   const N_COLORS = 8;
   const MONTHS   = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
 
-  const DEFAULTS = [
-    { id:"default-markus",  name:"Markus Pichlhofer",  date:"1978-06-21", emoji:"🎂", colorIndex:2 },
-    { id:"default-christa", name:"Christa Pichlhofer", date:"1977-04-22", emoji:"🌸", colorIndex:0 },
-    { id:"default-marc",    name:"Marc Pichlhofer",    date:"2007-03-23", emoji:"🎉", colorIndex:3 },
-    { id:"default-sven",    name:"Sven Pichlhofer",    date:"2004-04-28", emoji:"🌟", colorIndex:4 }
-  ];
-
-  // IDs von DEFAULTS die der User explizit gelöscht hat (pro Gerät)
-  let deletedDefaults = JSON.parse(localStorage.getItem("geburtstage_deleted") || "[]");
-
-  // Gespeicherte User-Einträge laden
-  let stored  = JSON.parse(localStorage.getItem("geburtstage") || "[]");
-  const storedIds = new Set(stored.map(e => e.id));
-
-  // DEFAULTS die noch nicht gespeichert & nicht gelöscht sind, immer einblenden
-  const missingDefaults = DEFAULTS.filter(d => !storedIds.has(d.id) && !deletedDefaults.includes(d.id));
-  let entries = [...stored, ...missingDefaults];
-  persist();
-
+  let entries       = [];
   let selectedEmoji = EMOJIS[0];
-  let editId = null; // null = add mode, string = edit mode
+  let editId        = null;
 
-  // ── DATE HELPERS ──────────────────────────────────────────────
+  // ── Echtzeit-Listener ─────────────────────────────────────────────
+  onSnapshot(col, snap => {
+    entries = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    render();
+  });
+
+  // ── Datum-Hilfsfunktionen ─────────────────────────────────────────
   function today0() { const d = new Date(); d.setHours(0,0,0,0); return d; }
 
   function daysUntil(dateStr) {
@@ -394,7 +363,7 @@
     return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
 
-  // ── RENDER ────────────────────────────────────────────────────
+  // ── Render ────────────────────────────────────────────────────────
   function render() {
     const container = document.getElementById("list-container");
 
@@ -411,26 +380,20 @@
       .map(e => ({ ...e, days: daysUntil(e.date), age: nextAge(e.date) }))
       .sort((a, b) => a.days - b.days);
 
-    // First entry (days >= 0) is "next" – gets blue frame
-    // (sorted ascending by days, so sorted[0] is next/soonest)
-    const nextId = sorted[0].id;
-
-    const todayGroup    = sorted.filter(e => e.days === 0);
-    const soonGroup     = sorted.filter(e => e.days > 0  && e.days <= 30);
-    const laterGroup    = sorted.filter(e => e.days > 30);
+    const nextId   = sorted[0].id;
+    const todayGrp = sorted.filter(e => e.days === 0);
+    const soonGrp  = sorted.filter(e => e.days > 0  && e.days <= 30);
+    const laterGrp = sorted.filter(e => e.days > 30);
 
     let html = "";
-    if (todayGroup.length)  html += section("Heute 🎉",  todayGroup,  nextId);
-    if (soonGroup.length)   html += section("Bald",       soonGroup,   nextId);
-    if (laterGroup.length)  html += section("Später",     laterGroup,  nextId);
+    if (todayGrp.length) html += section("Heute 🎉", todayGrp, nextId);
+    if (soonGrp.length)  html += section("Bald",     soonGrp,  nextId);
+    if (laterGrp.length) html += section("Später",   laterGrp, nextId);
 
     container.innerHTML = html;
 
-    // Scroll next-birthday card into view (smooth, with a bit of top offset)
     const nextEl = document.querySelector(".card.next");
-    if (nextEl) {
-      setTimeout(() => nextEl.scrollIntoView({ behavior: "smooth", block: "center" }), 80);
-    }
+    if (nextEl) setTimeout(() => nextEl.scrollIntoView({ behavior:"smooth", block:"center" }), 80);
   }
 
   function section(title, items, nextId) {
@@ -443,35 +406,33 @@
 
     let countdownHtml;
     if (e.days === 0) {
-      countdownHtml = `
-        <div class="countdown today">
-          <div class="countdown-days">🎂</div>
-          <span class="badge-today">${e.age}. Geburtstag!</span>
-        </div>`;
+      countdownHtml = `<div class="countdown today">
+        <div class="countdown-days">🎂</div>
+        <span class="badge-today">${e.age}. Geburtstag!</span>
+      </div>`;
     } else {
-      const lbl       = e.days === 1 ? "Tag" : "Tage";
-      const soonClass = e.days <= 7 ? " soon" : isNext ? " next-up" : "";
-      countdownHtml = `
-        <div class="countdown${soonClass}">
-          <div class="countdown-days">${e.days}</div>
-          <div class="countdown-label">${lbl}</div>
-        </div>`;
+      const lbl   = e.days === 1 ? "Tag" : "Tage";
+      const cls   = e.days <= 7 ? " soon" : isNext ? " next-up" : "";
+      countdownHtml = `<div class="countdown${cls}">
+        <div class="countdown-days">${e.days}</div>
+        <div class="countdown-label">${lbl}</div>
+      </div>`;
     }
 
     return `
-    <div class="card${isNext ? " next" : ""}" id="card-${e.id}">
+    <div class="card${isNext ? " next" : ""}">
       <div class="avatar ${cc}">${e.emoji}</div>
       <div class="card-info">
         <div class="card-name">${esc(e.name)}</div>
         <div class="card-date">${fmtDate(e.date)} · wird ${e.age}</div>
       </div>
       ${countdownHtml}
-      <button class="btn-edit" onclick="editEntry('${e.id}')" title="Bearbeiten">
+      <button class="btn-edit"   onclick="window.editEntry('${e.id}')"   title="Bearbeiten">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
           <path d="M12.854 1.146a1.5 1.5 0 0 1 2.121 0l1.879 1.879a1.5 1.5 0 0 1 0 2.121L5.5 16.5H1.5v-4L12.854 1.146zm1.06 1.061a.5.5 0 0 0-.707 0L2.5 12.914V15h2.086l10.707-10.707a.5.5 0 0 0 0-.707l-1.379-1.379z"/>
         </svg>
       </button>
-      <button class="btn-delete" onclick="deleteEntry('${e.id}')" title="Löschen">
+      <button class="btn-delete" onclick="window.deleteEntry('${e.id}')" title="Löschen">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
           <path d="M6.5 1.5A1.5 1.5 0 0 1 8 0h2a1.5 1.5 0 0 1 1.5 1.5V2h3a.75.75 0 0 1 0 1.5h-.5l-.7 11.2A2 2 0 0 1 11.3 16.5H6.7a2 2 0 0 1-2-1.8L4 3.5H3.5A.75.75 0 0 1 3.5 2h3v-.5zm1.5 0V2h2v-.5A.5.5 0 0 0 10 1H8a.5.5 0 0 0-.5.5zM5.5 3.5l.69 10.9a.5.5 0 0 0 .5.6h4.62a.5.5 0 0 0 .5-.6L12.5 3.5h-7z"/>
         </svg>
@@ -479,102 +440,95 @@
     </div>`;
   }
 
-  // ── CRUD ──────────────────────────────────────────────────────
-  function persist() { localStorage.setItem("geburtstage", JSON.stringify(entries)); }
-
-  function deleteEntry(id) {
-    // Wenn es ein DEFAULT-Eintrag ist, merken dass er gelöscht wurde
-    if (DEFAULTS.find(d => d.id === id)) {
-      deletedDefaults.push(id);
-      localStorage.setItem("geburtstage_deleted", JSON.stringify(deletedDefaults));
-    }
-    entries = entries.filter(e => e.id !== id);
-    persist();
-    render();
-  }
-
-  // ── MODAL ─────────────────────────────────────────────────────
-  function openModal() {
-    document.getElementById("modal-title").textContent = "Geburtstag hinzufügen";
+  // ── Modal ─────────────────────────────────────────────────────────
+  window.openModal = () => {
     editId = null;
+    document.getElementById("modal-title").textContent = "Geburtstag hinzufügen";
+    document.getElementById("input-name").value = "";
+    document.getElementById("input-date").value  = "";
+    selectedEmoji = EMOJIS[0];
+    syncEmojiPicker();
     document.getElementById("overlay").classList.add("visible");
     setTimeout(() => document.getElementById("input-name").focus(), 350);
-  }
+  };
 
-  function editEntry(id) {
+  window.editEntry = (id) => {
     const e = entries.find(x => x.id === id);
     if (!e) return;
     editId = id;
-    document.getElementById("modal-title").textContent = "Geburtstag bearbeiten";
+    document.getElementById("modal-title").textContent = "Bearbeiten";
     document.getElementById("input-name").value = e.name;
     document.getElementById("input-date").value  = e.date;
     selectedEmoji = e.emoji;
     syncEmojiPicker();
     document.getElementById("overlay").classList.add("visible");
     setTimeout(() => document.getElementById("input-name").focus(), 350);
-  }
+  };
 
-  function closeModal() {
+  window.closeModal = () => {
     document.getElementById("overlay").classList.remove("visible");
-    document.getElementById("input-name").value = "";
-    document.getElementById("input-date").value  = "";
     editId = null;
-    selectedEmoji = EMOJIS[0];
-    syncEmojiPicker();
-  }
+  };
 
-  function handleOverlayClick(e) {
-    if (e.target === document.getElementById("overlay")) closeModal();
-  }
+  window.handleOverlayClick = (ev) => {
+    if (ev.target === document.getElementById("overlay")) window.closeModal();
+  };
 
-  document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") window.closeModal(); });
 
+  // ── Emoji Picker ──────────────────────────────────────────────────
   function buildEmojiPicker() {
     document.getElementById("emoji-picker").innerHTML = EMOJIS.map(em =>
-      `<button class="emoji-btn ${em === selectedEmoji ? "selected" : ""}" onclick="selectEmoji('${em}')">${em}</button>`
+      `<button class="emoji-btn ${em === selectedEmoji ? "selected" : ""}"
+               onclick="window.selectEmoji('${em}')">${em}</button>`
     ).join("");
   }
 
   function syncEmojiPicker() {
-    document.querySelectorAll(".emoji-btn").forEach(b => b.classList.toggle("selected", b.textContent === selectedEmoji));
+    document.querySelectorAll(".emoji-btn").forEach(b =>
+      b.classList.toggle("selected", b.textContent === selectedEmoji));
   }
 
-  function selectEmoji(em) { selectedEmoji = em; syncEmojiPicker(); }
+  window.selectEmoji = (em) => { selectedEmoji = em; syncEmojiPicker(); };
 
-  function saveEntry() {
+  // ── Speichern / Löschen ───────────────────────────────────────────
+  window.saveEntry = async () => {
     const name = document.getElementById("input-name").value.trim();
     const date = document.getElementById("input-date").value;
     if (!name) { shake("input-name"); return; }
     if (!date) { shake("input-date"); return; }
 
-    if (editId) {
-      const idx = entries.findIndex(e => e.id === editId);
-      if (idx !== -1) {
-        entries[idx] = { ...entries[idx], name, date, emoji: selectedEmoji };
-      }
-    } else {
-      entries.push({ id: crypto.randomUUID(), name, date, emoji: selectedEmoji, colorIndex: Math.floor(Math.random() * N_COLORS) });
-    }
+    const btn = document.getElementById("btn-save");
+    btn.disabled = true;
 
-    persist();
-    closeModal();
-    render();
-  }
+    try {
+      if (editId) {
+        await updateDoc(doc(db, "geburtstage", editId), { name, date, emoji: selectedEmoji });
+      } else {
+        await addDoc(col, { name, date, emoji: selectedEmoji, colorIndex: Math.floor(Math.random() * N_COLORS) });
+      }
+      window.closeModal();
+    } finally {
+      btn.disabled = false;
+    }
+  };
+
+  window.deleteEntry = async (id) => {
+    await deleteDoc(doc(db, "geburtstage", id));
+  };
 
   function shake(id) {
     const el = document.getElementById(id);
     el.style.borderColor = "var(--danger)";
     el.animate([
-      { transform: "translateX(0)" }, { transform: "translateX(-6px)" },
-      { transform: "translateX(6px)" }, { transform: "translateX(-4px)" },
-      { transform: "translateX(0)" }
+      { transform:"translateX(0)" }, { transform:"translateX(-6px)" },
+      { transform:"translateX(6px)" }, { transform:"translateX(-4px)" },
+      { transform:"translateX(0)" }
     ], { duration: 300 });
     setTimeout(() => el.style.borderColor = "", 800);
   }
 
-  // ── INIT ──────────────────────────────────────────────────────
   buildEmojiPicker();
-  render();
 </script>
 </body>
 </html>
