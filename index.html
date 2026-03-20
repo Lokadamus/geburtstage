@@ -9,13 +9,16 @@
 
     :root {
       --bg: #f5f5f7;
-      --card: #fff;
+      --card: #ffffff;
       --text-primary: #1d1d1f;
       --text-secondary: #6e6e73;
       --accent: #007aff;
       --accent-hover: #0066cc;
       --danger: #ff3b30;
       --separator: rgba(0,0,0,0.08);
+      --shadow: 0 2px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+      --radius: 18px;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -24,34 +27,28 @@
         --card: #1c1c1e;
         --text-primary: #f5f5f7;
         --text-secondary: #98989d;
-        --separator: rgba(255,255,255,0.1);
+        --separator: rgba(255,255,255,0.08);
+        --shadow: 0 2px 20px rgba(0,0,0,0.4);
+        --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
       }
-    }
-
-    html, body {
-      height: 100%;
-      overflow: hidden;
     }
 
     body {
       font-family: -apple-system, "SF Pro Display", BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
       color: var(--text-primary);
+      min-height: 100vh;
       -webkit-font-smoothing: antialiased;
-      display: flex;
-      flex-direction: column;
     }
 
-    /* ── HEADER ───────────────────────────────────────────────── */
+    /* ── HEADER ─────────────────────────────────────────────────── */
     header {
-      flex-shrink: 0;
-      padding: 48px 28px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      max-width: 660px;
-      width: 100%;
+      padding: 52px 24px 0;
+      max-width: 680px;
       margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
     }
 
     h1 {
@@ -70,135 +67,112 @@
       border-radius: 980px;
       padding: 10px 18px;
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 590;
       font-family: inherit;
       cursor: pointer;
       transition: background 0.15s, transform 0.1s;
-      -webkit-tap-highlight-color: transparent;
     }
     .btn-add:hover  { background: var(--accent-hover); }
     .btn-add:active { transform: scale(0.96); }
 
-    /* ── REEL SECTION ─────────────────────────────────────────── */
-    .reel-section {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      max-width: 660px;
-      width: 100%;
+    /* ── MAIN LIST ──────────────────────────────────────────────── */
+    main {
+      max-width: 680px;
       margin: 0 auto;
+      padding: 28px 24px 60px;
     }
 
-    /* gradient masks */
-    .reel-section::before,
-    .reel-section::after {
-      content: '';
-      position: absolute;
-      left: 0; right: 0;
-      z-index: 5;
-      pointer-events: none;
+    /* ── SECTION LABELS ─────────────────────────────────────────── */
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin: 28px 0 10px 4px;
     }
-    .reel-section::before {
-      top: 0; height: 32%;
-      background: linear-gradient(to bottom, var(--bg) 5%, transparent);
-    }
-    .reel-section::after {
-      bottom: 0; height: 32%;
-      background: linear-gradient(to top, var(--bg) 5%, transparent);
-    }
+    .section-label:first-child { margin-top: 0; }
 
-    /* center frame */
-    .reel-frame {
-      position: absolute;
-      left: 20px; right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      height: 94px;
-      border-radius: 20px;
-      border: 1.5px solid rgba(0,122,255,0.55);
-      background: rgba(0,122,255,0.035);
-      box-shadow: 0 0 0 1px rgba(0,122,255,0.08), 0 4px 28px rgba(0,122,255,0.12);
-      z-index: 4;
-      pointer-events: none;
-    }
-
-    /* perspective wrapper */
-    .reel-perspective {
-      position: absolute;
-      inset: 0;
-      perspective: 700px;
-      perspective-origin: 50% 50%;
-    }
-
-    /* reel track */
-    .reel-track {
-      position: absolute;
-      left: 0; right: 0; top: 0;
-      will-change: transform;
-    }
-
-    /* ── REEL ITEMS ───────────────────────────────────────────── */
-    .reel-item {
-      height: 106px;
+    /* ── CARDS ──────────────────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
-      padding: 0 28px;
+      padding: 16px 20px;
       gap: 16px;
-      cursor: grab;
-      will-change: transform, opacity;
-      transform-origin: center center;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
-    .reel-item:active { cursor: grabbing; }
-    .reel-item.spacer { pointer-events: none; }
+    .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
 
+    /* Highlighted card – next birthday */
+    .card.next {
+      border: 1.5px solid rgba(0,122,255,0.55);
+      background: rgba(0,122,255,0.035);
+      box-shadow: 0 0 0 1px rgba(0,122,255,0.08), 0 4px 28px rgba(0,122,255,0.14);
+    }
+    .card.next:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 1px rgba(0,122,255,0.12), 0 8px 36px rgba(0,122,255,0.18);
+    }
+
+    /* ── AVATAR ─────────────────────────────────────────────────── */
     .avatar {
-      width: 54px; height: 54px;
+      width: 52px; height: 52px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 25px;
+      font-size: 22px;
       flex-shrink: 0;
     }
 
-    .item-info { flex: 1; min-width: 0; }
-    .item-name {
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: -0.2px;
+    /* ── CARD CONTENT ───────────────────────────────────────────── */
+    .card-info { flex: 1; min-width: 0; }
+    .card-name {
+      font-size: 17px;
+      font-weight: 590;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .item-sub {
-      font-size: 13px;
+    .card-date {
+      font-size: 14px;
       color: var(--text-secondary);
-      margin-top: 3px;
+      margin-top: 2px;
     }
 
-    .item-right {
-      text-align: right;
-      flex-shrink: 0;
-      min-width: 52px;
-    }
-    .count-num {
-      font-size: 30px;
+    /* ── COUNTDOWN ──────────────────────────────────────────────── */
+    .countdown { text-align: right; flex-shrink: 0; }
+    .countdown-days {
+      font-size: 28px;
       font-weight: 700;
-      letter-spacing: -1px;
+      letter-spacing: -0.5px;
       line-height: 1;
-      color: var(--accent);
     }
-    .count-lbl {
-      font-size: 10px;
+    .countdown-label {
+      font-size: 12px;
       color: var(--text-secondary);
-      margin-top: 3px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      margin-top: 2px;
     }
-    .count-today { font-size: 28px; line-height: 1; }
+    .countdown.today .countdown-days { color: var(--accent); }
+    .countdown.soon  .countdown-days { color: #ff9f0a; }
+    .countdown.next-up .countdown-days { color: var(--accent); }
 
+    .badge-today {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 980px;
+      margin-top: 3px;
+    }
+
+    /* ── DELETE BUTTON ──────────────────────────────────────────── */
     .btn-delete {
       background: none;
       border: none;
@@ -208,11 +182,20 @@
       color: var(--text-secondary);
       transition: color 0.15s, background 0.15s;
       flex-shrink: 0;
-      line-height: 1;
     }
     .btn-delete:hover { color: var(--danger); background: rgba(255,59,48,0.1); }
 
-    /* Avatar colors */
+    /* ── EMPTY STATE ────────────────────────────────────────────── */
+    .empty {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--text-secondary);
+    }
+    .empty .emoji { font-size: 52px; margin-bottom: 16px; }
+    .empty p { font-size: 17px; line-height: 1.5; }
+    .empty p strong { color: var(--text-primary); display: block; font-size: 20px; margin-bottom: 6px; }
+
+    /* ── AVATAR COLORS ──────────────────────────────────────────── */
     .c0 { background: #ffd6e7; }
     .c1 { background: #d0f0fd; }
     .c2 { background: #d4f7d4; }
@@ -220,30 +203,14 @@
     .c4 { background: #e8d5ff; }
     .c5 { background: #ffd9b3; }
     .c6 { background: #d1ecf1; }
-    .c7 { background: #efefef; }
+    .c7 { background: #f0f0f0; }
 
-    /* ── EMPTY STATE ──────────────────────────────────────────── */
-    .empty-state {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-      text-align: center;
-      padding: 40px;
-    }
-    .empty-state .e { font-size: 52px; margin-bottom: 16px; }
-    .empty-state strong { color: var(--text-primary); font-size: 20px; display: block; margin-bottom: 8px; }
-    .empty-state p { font-size: 16px; line-height: 1.5; }
-
-    /* ── MODAL ────────────────────────────────────────────────── */
+    /* ── MODAL ──────────────────────────────────────────────────── */
     .overlay {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display: flex;
       align-items: flex-end;
       justify-content: center;
@@ -276,11 +243,11 @@
     .field { margin-bottom: 16px; }
     .field label {
       display: block;
-      font-size: 12px; font-weight: 600;
+      font-size: 13px; font-weight: 600;
       color: var(--text-secondary);
       margin-bottom: 6px;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
     }
     .field input {
       width: 100%;
@@ -304,9 +271,7 @@
       background: var(--bg);
       font-size: 22px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       transition: border-color 0.12s, transform 0.1s;
     }
     .emoji-btn:hover { transform: scale(1.1); }
@@ -318,7 +283,7 @@
       border-radius: 12px; border: none;
       background: var(--bg);
       color: var(--text-primary);
-      font-size: 16px; font-weight: 600;
+      font-size: 16px; font-weight: 590;
       font-family: inherit; cursor: pointer;
       transition: opacity 0.15s;
     }
@@ -327,7 +292,7 @@
       flex: 2; padding: 14px;
       border-radius: 12px; border: none;
       background: var(--accent); color: #fff;
-      font-size: 16px; font-weight: 600;
+      font-size: 16px; font-weight: 590;
       font-family: inherit; cursor: pointer;
       transition: background 0.15s, transform 0.1s;
     }
@@ -340,20 +305,16 @@
 <header>
   <h1>Geburtstage</h1>
   <button class="btn-add" onclick="openModal()">
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-      <path d="M7 1.75a.75.75 0 0 1 .75.75v3.75h3.75a.75.75 0 0 1 0 1.5H7.75v3.75a.75.75 0 0 1-1.5 0V7.75H2.5a.75.75 0 0 1 0-1.5h3.75V2.5A.75.75 0 0 1 7 1.75z"/>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2z"/>
     </svg>
     Hinzufügen
   </button>
 </header>
 
-<div class="reel-section" id="reel-section">
-  <div class="reel-frame" id="reel-frame"></div>
-  <div class="reel-perspective">
-    <div class="reel-track" id="reel-track"></div>
-  </div>
-</div>
+<main id="list-container"></main>
 
+<!-- Modal -->
 <div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
   <div class="sheet">
     <div class="sheet-handle"></div>
@@ -378,365 +339,197 @@
 </div>
 
 <script>
-// ── CONFIG ─────────────────────────────────────────────────────────
-const ITEM_H    = 106;  // height of each reel item (px)
-const EMOJIS    = ["🎂","🎉","🎈","🥳","🌟","💫","🦋","🌸","🌈","🎁","🦄","🐶","🐱","🌺","🍀","⭐"];
-const N_COLORS  = 8;
-const MONTHS    = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
+  const EMOJIS   = ["🎂","🎉","🎈","🥳","🌟","💫","🦋","🌸","🌈","🎁","🦄","🐶","🐱","🌺","🍀","⭐"];
+  const N_COLORS = 8;
+  const MONTHS   = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
 
-// ── DATA ────────────────────────────────────────────────────────────
-const DEFAULTS = [
-  { id:"default-markus",  name:"Markus Pichlhofer",  date:"1978-06-21", emoji:"🎂", colorIndex:2 },
-  { id:"default-christa", name:"Christa Pichlhofer", date:"1977-04-22", emoji:"🌸", colorIndex:0 },
-  { id:"default-marc",    name:"Marc Pichlhofer",    date:"2007-03-23", emoji:"🎉", colorIndex:3 },
-  { id:"default-sven",    name:"Sven Pichlhofer",    date:"2004-04-28", emoji:"🌟", colorIndex:4 }
-];
+  const DEFAULTS = [
+    { id:"default-markus",  name:"Markus Pichlhofer",  date:"1978-06-21", emoji:"🎂", colorIndex:2 },
+    { id:"default-christa", name:"Christa Pichlhofer", date:"1977-04-22", emoji:"🌸", colorIndex:0 },
+    { id:"default-marc",    name:"Marc Pichlhofer",    date:"2007-03-23", emoji:"🎉", colorIndex:3 },
+    { id:"default-sven",    name:"Sven Pichlhofer",    date:"2004-04-28", emoji:"🌟", colorIndex:4 }
+  ];
 
-let stored  = localStorage.getItem("geburtstage");
-let entries = stored ? JSON.parse(stored) : [...DEFAULTS];
-if (!stored) persist();
+  let stored  = localStorage.getItem("geburtstage");
+  let entries = stored ? JSON.parse(stored) : [...DEFAULTS];
+  if (!stored) persist();
 
-// ── STATE ───────────────────────────────────────────────────────────
-let sorted      = [];
-let currentIdx  = 0;
-let trackOffset = 0;
-let reelH       = 0;
-let numSpacers  = 0;
-let animFrame   = null;
-let selectedEmoji = EMOJIS[0];
+  let selectedEmoji = EMOJIS[0];
 
-// drag state
-let isDragging      = false;
-let dragStartY      = 0;
-let dragStartOffset = 0;
-let lastDragY       = 0;
-let dragVelocity    = 0;
+  // ── DATE HELPERS ──────────────────────────────────────────────
+  function today0() { const d = new Date(); d.setHours(0,0,0,0); return d; }
 
-// ── DATE HELPERS ────────────────────────────────────────────────────
-function today0() {
-  const d = new Date();
-  d.setHours(0,0,0,0);
-  return d;
-}
-
-function daysUntil(dateStr) {
-  const now = today0();
-  const [y,m,d] = dateStr.split("-").map(Number);
-  let next = new Date(now.getFullYear(), m-1, d);
-  if (next < now) next.setFullYear(now.getFullYear() + 1);
-  return Math.round((next - now) / 86400000);
-}
-
-function nextAge(dateStr) {
-  const now = today0();
-  const [y,m,d] = dateStr.split("-").map(Number);
-  let next = new Date(now.getFullYear(), m-1, d);
-  if (next < now) next.setFullYear(now.getFullYear() + 1);
-  return next.getFullYear() - y;
-}
-
-function fmtDate(dateStr) {
-  const [y,m,d] = dateStr.split("-").map(Number);
-  return `${d}. ${MONTHS[m-1]} ${y}`;
-}
-
-function esc(s) {
-  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
-
-// ── REEL MATH ───────────────────────────────────────────────────────
-function offsetForIdx(idx) {
-  // translateY so that item `idx` is centered in the viewport
-  return reelH / 2 - (idx + numSpacers + 0.5) * ITEM_H;
-}
-
-function fracIdxAtOffset(offset) {
-  // fractional real-item index at the center of viewport
-  return (reelH / 2 - offset) / ITEM_H - numSpacers - 0.5;
-}
-
-function updateTransforms(offset) {
-  const centerPos = (reelH / 2 - offset) / ITEM_H; // fractional track pos at center
-  document.querySelectorAll(".reel-item:not(.spacer)").forEach((el, i) => {
-    const pos  = i + numSpacers + 0.5;           // center of item in track units
-    const dist = pos - centerPos;                 // distance from center (in items)
-    const absD = Math.abs(dist);
-
-    const rotX    = Math.max(-72, Math.min(72, -dist * 26));
-    const scale   = Math.max(1 - absD * 0.11, 0.52);
-    const opacity = Math.max(1 - absD * 0.31, 0.07);
-
-    el.style.transform = `rotateX(${rotX}deg) scale(${scale})`;
-    el.style.opacity   = opacity;
-  });
-}
-
-// ── ANIMATION ───────────────────────────────────────────────────────
-function cancelAnim() {
-  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
-}
-
-function animateTo(idx, duration = 480, easing = easeOutCubic, onDone) {
-  cancelAnim();
-  idx = Math.max(0, Math.min(sorted.length - 1, idx));
-  const target = offsetForIdx(idx);
-  const start  = trackOffset;
-  const t0     = performance.now();
-  const track  = document.getElementById("reel-track");
-
-  (function tick(now) {
-    const p = Math.min((now - t0) / duration, 1);
-    trackOffset = start + (target - start) * easing(p);
-    track.style.transform = `translateY(${trackOffset}px)`;
-    updateTransforms(trackOffset);
-    if (p < 1) {
-      animFrame = requestAnimationFrame(tick);
-    } else {
-      trackOffset = target;
-      currentIdx  = idx;
-      animFrame   = null;
-      if (onDone) onDone();
-    }
-  })(t0);
-}
-
-function slotSpin(targetIdx) {
-  // Start far below → roll up and snap
-  cancelAnim();
-  targetIdx = Math.max(0, Math.min(sorted.length - 1, targetIdx));
-  const target = offsetForIdx(targetIdx);
-  const spin   = target - ITEM_H * Math.max(sorted.length + 3, 6);
-
-  trackOffset  = spin;
-  const track  = document.getElementById("reel-track");
-  track.style.transform = `translateY(${spin}px)`;
-  updateTransforms(spin);
-
-  const t0 = performance.now();
-  const dur = 1300;
-
-  (function tick(now) {
-    const p = Math.min((now - t0) / dur, 1);
-    // fast-to-slow: 1 - (1-t)^2.8
-    const e = 1 - Math.pow(1 - p, 2.8);
-    trackOffset = spin + (target - spin) * e;
-    track.style.transform = `translateY(${trackOffset}px)`;
-    updateTransforms(trackOffset);
-    if (p < 1) {
-      animFrame = requestAnimationFrame(tick);
-    } else {
-      trackOffset = target;
-      currentIdx  = targetIdx;
-      animFrame   = null;
-    }
-  })(t0);
-}
-
-function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
-
-// ── RENDER ──────────────────────────────────────────────────────────
-function computeSorted() {
-  sorted = entries
-    .map(e => ({ ...e, days: daysUntil(e.date), age: nextAge(e.date) }))
-    .sort((a, b) => a.days - b.days);
-}
-
-function buildTrack() {
-  const section = document.getElementById("reel-section");
-  reelH      = section.clientHeight;
-  numSpacers = Math.max(3, Math.ceil(reelH / ITEM_H / 2) + 1);
-
-  const track = document.getElementById("reel-track");
-
-  // empty state
-  const existingEmpty = document.getElementById("empty-state");
-  if (sorted.length === 0) {
-    document.getElementById("reel-frame").style.opacity = "0";
-    track.innerHTML = "";
-    if (!existingEmpty) {
-      const el = document.createElement("div");
-      el.id = "empty-state";
-      el.className = "empty-state";
-      el.innerHTML = `<div class="e">🎂</div><strong>Keine Geburtstage</strong><p>Füge Geburtstage hinzu,<br>damit du nie wieder einen vergisst.</p>`;
-      section.appendChild(el);
-    }
-    return;
+  function daysUntil(dateStr) {
+    const now = today0();
+    const [y,m,d] = dateStr.split("-").map(Number);
+    let next = new Date(now.getFullYear(), m-1, d);
+    if (next < now) next.setFullYear(now.getFullYear() + 1);
+    return Math.round((next - now) / 86400000);
   }
-  if (existingEmpty) existingEmpty.remove();
-  document.getElementById("reel-frame").style.opacity = "1";
 
-  let html = "";
-  for (let i = 0; i < numSpacers; i++) html += `<div class="reel-item spacer"></div>`;
+  function nextAge(dateStr) {
+    const now = today0();
+    const [y,m,d] = dateStr.split("-").map(Number);
+    let next = new Date(now.getFullYear(), m-1, d);
+    if (next < now) next.setFullYear(now.getFullYear() + 1);
+    return next.getFullYear() - y;
+  }
 
-  sorted.forEach((e, i) => {
-    const cc = "c" + (e.colorIndex ?? 0);
-    const right = e.days === 0
-      ? `<div class="item-right"><div class="count-today">🎂</div><div class="count-lbl">Heute!</div></div>`
-      : `<div class="item-right"><div class="count-num">${e.days}</div><div class="count-lbl">${e.days === 1 ? "Tag" : "Tage"}</div></div>`;
+  function fmtDate(dateStr) {
+    const [y,m,d] = dateStr.split("-").map(Number);
+    return `${d}. ${MONTHS[m-1]} ${y}`;
+  }
 
-    html += `
-    <div class="reel-item" data-idx="${i}">
+  function esc(s) {
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  // ── RENDER ────────────────────────────────────────────────────
+  function render() {
+    const container = document.getElementById("list-container");
+
+    if (entries.length === 0) {
+      container.innerHTML = `
+        <div class="empty">
+          <div class="emoji">🎂</div>
+          <p><strong>Keine Geburtstage</strong>Füge Geburtstage hinzu,<br>damit du nie wieder einen vergisst.</p>
+        </div>`;
+      return;
+    }
+
+    const sorted = entries
+      .map(e => ({ ...e, days: daysUntil(e.date), age: nextAge(e.date) }))
+      .sort((a, b) => a.days - b.days);
+
+    // First entry (days >= 0) is "next" – gets blue frame
+    // (sorted ascending by days, so sorted[0] is next/soonest)
+    const nextId = sorted[0].id;
+
+    const todayGroup    = sorted.filter(e => e.days === 0);
+    const soonGroup     = sorted.filter(e => e.days > 0  && e.days <= 30);
+    const laterGroup    = sorted.filter(e => e.days > 30);
+
+    let html = "";
+    if (todayGroup.length)  html += section("Heute 🎉",  todayGroup,  nextId);
+    if (soonGroup.length)   html += section("Bald",       soonGroup,   nextId);
+    if (laterGroup.length)  html += section("Später",     laterGroup,  nextId);
+
+    container.innerHTML = html;
+
+    // Scroll next-birthday card into view (smooth, with a bit of top offset)
+    const nextEl = document.querySelector(".card.next");
+    if (nextEl) {
+      setTimeout(() => nextEl.scrollIntoView({ behavior: "smooth", block: "center" }), 80);
+    }
+  }
+
+  function section(title, items, nextId) {
+    return `<div class="section-label">${title}</div>` + items.map(e => card(e, nextId)).join("");
+  }
+
+  function card(e, nextId) {
+    const isNext = e.id === nextId;
+    const cc     = "c" + (e.colorIndex ?? 0);
+
+    let countdownHtml;
+    if (e.days === 0) {
+      countdownHtml = `
+        <div class="countdown today">
+          <div class="countdown-days">🎂</div>
+          <span class="badge-today">${e.age}. Geburtstag!</span>
+        </div>`;
+    } else {
+      const lbl       = e.days === 1 ? "Tag" : "Tage";
+      const soonClass = e.days <= 7 ? " soon" : isNext ? " next-up" : "";
+      countdownHtml = `
+        <div class="countdown${soonClass}">
+          <div class="countdown-days">${e.days}</div>
+          <div class="countdown-label">${lbl}</div>
+        </div>`;
+    }
+
+    return `
+    <div class="card${isNext ? " next" : ""}" id="card-${e.id}">
       <div class="avatar ${cc}">${e.emoji}</div>
-      <div class="item-info">
-        <div class="item-name">${esc(e.name)}</div>
-        <div class="item-sub">${fmtDate(e.date)} · wird ${e.age}</div>
+      <div class="card-info">
+        <div class="card-name">${esc(e.name)}</div>
+        <div class="card-date">${fmtDate(e.date)} · wird ${e.age}</div>
       </div>
-      ${right}
+      ${countdownHtml}
       <button class="btn-delete" onclick="deleteEntry('${e.id}')" title="Löschen">
-        <svg width="17" height="17" viewBox="0 0 17 17" fill="currentColor">
-          <path d="M6 1.5A1.5 1.5 0 0 1 7.5 0h2A1.5 1.5 0 0 1 11 1.5V2h3a.75.75 0 0 1 0 1.5h-.43l-.63 10.6A2 2 0 0 1 11 16H6a2 2 0 0 1-2-1.9L3.43 3.5H3A.75.75 0 0 1 3 2h3v-.5zm1.5 0V2h2v-.5A.5.5 0 0 0 9 1H7.5a.5.5 0 0 0-.5.5zM5 3.5l.62 10.4a.5.5 0 0 0 .5.6h4.76a.5.5 0 0 0 .5-.6L12 3.5H5z"/>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+          <path d="M6.5 1.5A1.5 1.5 0 0 1 8 0h2a1.5 1.5 0 0 1 1.5 1.5V2h3a.75.75 0 0 1 0 1.5h-.5l-.7 11.2A2 2 0 0 1 11.3 16.5H6.7a2 2 0 0 1-2-1.8L4 3.5H3.5A.75.75 0 0 1 3.5 2h3v-.5zm1.5 0V2h2v-.5A.5.5 0 0 0 10 1H8a.5.5 0 0 0-.5.5zM5.5 3.5l.69 10.9a.5.5 0 0 0 .5.6h4.62a.5.5 0 0 0 .5-.6L12.5 3.5h-7z"/>
         </svg>
       </button>
     </div>`;
-  });
-
-  for (let i = 0; i < numSpacers; i++) html += `<div class="reel-item spacer"></div>`;
-  track.innerHTML = html;
-}
-
-// ── DRAG ────────────────────────────────────────────────────────────
-function setupDrag() {
-  const section = document.getElementById("reel-section");
-  section.addEventListener("mousedown",  e => startDrag(e.clientY));
-  section.addEventListener("touchstart", e => startDrag(e.touches[0].clientY), { passive: true });
-  document.addEventListener("mousemove",  e => drag(e.clientY));
-  document.addEventListener("touchmove",  e => { if (isDragging) { e.preventDefault(); drag(e.touches[0].clientY); } }, { passive: false });
-  document.addEventListener("mouseup",   endDrag);
-  document.addEventListener("touchend",  endDrag);
-}
-
-function startDrag(y) {
-  if (sorted.length === 0) return;
-  cancelAnim();
-  isDragging      = true;
-  dragStartY      = y;
-  dragStartOffset = trackOffset;
-  lastDragY       = y;
-  dragVelocity    = 0;
-}
-
-function drag(y) {
-  if (!isDragging) return;
-  dragVelocity = y - lastDragY;
-  lastDragY    = y;
-
-  const lo  = offsetForIdx(sorted.length - 1) - ITEM_H * 0.5;
-  const hi  = offsetForIdx(0) + ITEM_H * 0.5;
-  trackOffset = Math.max(lo, Math.min(hi, dragStartOffset + (y - dragStartY)));
-
-  document.getElementById("reel-track").style.transform = `translateY(${trackOffset}px)`;
-  updateTransforms(trackOffset);
-}
-
-function endDrag() {
-  if (!isDragging) return;
-  isDragging = false;
-
-  // momentum nudge
-  const nudged    = trackOffset + dragVelocity * 3.5;
-  const fracIdx   = fracIdxAtOffset(nudged);
-  const nearestIdx = Math.max(0, Math.min(sorted.length - 1, Math.round(fracIdx)));
-  animateTo(nearestIdx, 350);
-}
-
-// ── CRUD ────────────────────────────────────────────────────────────
-function persist() { localStorage.setItem("geburtstage", JSON.stringify(entries)); }
-
-function deleteEntry(id) {
-  entries = entries.filter(e => e.id !== id);
-  persist();
-  computeSorted();
-  currentIdx = Math.max(0, Math.min(sorted.length - 1, currentIdx));
-  buildTrack();
-  if (sorted.length > 0) {
-    trackOffset = offsetForIdx(currentIdx);
-    document.getElementById("reel-track").style.transform = `translateY(${trackOffset}px)`;
-    updateTransforms(trackOffset);
   }
-}
 
-// ── MODAL ───────────────────────────────────────────────────────────
-function openModal() {
-  document.getElementById("overlay").classList.add("visible");
-  setTimeout(() => document.getElementById("input-name").focus(), 350);
-}
+  // ── CRUD ──────────────────────────────────────────────────────
+  function persist() { localStorage.setItem("geburtstage", JSON.stringify(entries)); }
 
-function closeModal() {
-  document.getElementById("overlay").classList.remove("visible");
-  document.getElementById("input-name").value = "";
-  document.getElementById("input-date").value  = "";
-  selectedEmoji = EMOJIS[0];
-  syncEmojiPicker();
-}
-
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById("overlay")) closeModal();
-}
-
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
-
-function buildEmojiPicker() {
-  document.getElementById("emoji-picker").innerHTML = EMOJIS.map(em =>
-    `<button class="emoji-btn ${em === selectedEmoji ? "selected" : ""}" onclick="selectEmoji('${em}')">${em}</button>`
-  ).join("");
-}
-
-function syncEmojiPicker() {
-  document.querySelectorAll(".emoji-btn").forEach(b => b.classList.toggle("selected", b.textContent === selectedEmoji));
-}
-
-function selectEmoji(em) { selectedEmoji = em; syncEmojiPicker(); }
-
-function saveEntry() {
-  const name = document.getElementById("input-name").value.trim();
-  const date = document.getElementById("input-date").value;
-  if (!name) { shake("input-name"); return; }
-  if (!date) { shake("input-date"); return; }
-
-  const newId = crypto.randomUUID();
-  entries.push({ id: newId, name, date, emoji: selectedEmoji, colorIndex: Math.floor(Math.random() * N_COLORS) });
-  persist();
-  closeModal();
-
-  computeSorted();
-  buildTrack();
-  const idx = sorted.findIndex(e => e.id === newId);
-  animateTo(idx >= 0 ? idx : 0, 600);
-}
-
-function shake(id) {
-  const el = document.getElementById(id);
-  el.style.borderColor = "var(--danger)";
-  el.animate([
-    { transform: "translateX(0)" },
-    { transform: "translateX(-6px)" },
-    { transform: "translateX(6px)" },
-    { transform: "translateX(-4px)" },
-    { transform: "translateX(0)" }
-  ], { duration: 300 });
-  setTimeout(() => el.style.borderColor = "", 800);
-}
-
-// ── INIT ────────────────────────────────────────────────────────────
-buildEmojiPicker();
-setupDrag();
-
-window.addEventListener("DOMContentLoaded", () => {
-  computeSorted();
-  buildTrack();
-  if (sorted.length > 0) slotSpin(0); // spin to first (next) birthday
-});
-
-window.addEventListener("resize", () => {
-  cancelAnim();
-  buildTrack();
-  if (sorted.length > 0) {
-    currentIdx  = Math.max(0, Math.min(sorted.length - 1, currentIdx));
-    trackOffset = offsetForIdx(currentIdx);
-    document.getElementById("reel-track").style.transform = `translateY(${trackOffset}px)`;
-    updateTransforms(trackOffset);
+  function deleteEntry(id) {
+    entries = entries.filter(e => e.id !== id);
+    persist();
+    render();
   }
-});
+
+  // ── MODAL ─────────────────────────────────────────────────────
+  function openModal() {
+    document.getElementById("overlay").classList.add("visible");
+    setTimeout(() => document.getElementById("input-name").focus(), 350);
+  }
+
+  function closeModal() {
+    document.getElementById("overlay").classList.remove("visible");
+    document.getElementById("input-name").value = "";
+    document.getElementById("input-date").value  = "";
+    selectedEmoji = EMOJIS[0];
+    syncEmojiPicker();
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById("overlay")) closeModal();
+  }
+
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+  function buildEmojiPicker() {
+    document.getElementById("emoji-picker").innerHTML = EMOJIS.map(em =>
+      `<button class="emoji-btn ${em === selectedEmoji ? "selected" : ""}" onclick="selectEmoji('${em}')">${em}</button>`
+    ).join("");
+  }
+
+  function syncEmojiPicker() {
+    document.querySelectorAll(".emoji-btn").forEach(b => b.classList.toggle("selected", b.textContent === selectedEmoji));
+  }
+
+  function selectEmoji(em) { selectedEmoji = em; syncEmojiPicker(); }
+
+  function saveEntry() {
+    const name = document.getElementById("input-name").value.trim();
+    const date = document.getElementById("input-date").value;
+    if (!name) { shake("input-name"); return; }
+    if (!date) { shake("input-date"); return; }
+    entries.push({ id: crypto.randomUUID(), name, date, emoji: selectedEmoji, colorIndex: Math.floor(Math.random() * N_COLORS) });
+    persist();
+    closeModal();
+    render();
+  }
+
+  function shake(id) {
+    const el = document.getElementById(id);
+    el.style.borderColor = "var(--danger)";
+    el.animate([
+      { transform: "translateX(0)" }, { transform: "translateX(-6px)" },
+      { transform: "translateX(6px)" }, { transform: "translateX(-4px)" },
+      { transform: "translateX(0)" }
+    ], { duration: 300 });
+    setTimeout(() => el.style.borderColor = "", 800);
+  }
+
+  // ── INIT ──────────────────────────────────────────────────────
+  buildEmojiPicker();
+  render();
 </script>
 </body>
 </html>
