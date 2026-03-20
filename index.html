@@ -375,7 +375,13 @@
   const EMOJIS = ["🎂","🎉","🎈","🥳","🌟","💫","🦋","🌸","🌈","🎁","🦄","🐶","🐱","🌺","🍀","⭐"];
   const COLORS = 8; // c0–c7
 
-  let entries = JSON.parse(localStorage.getItem("geburtstage") || "[]");
+  const DEFAULTS = [
+    { id: "default-markus",  name: "Markus Pichlhofer",  date: "1978-06-21", emoji: "🎂", colorIndex: 2 },
+    { id: "default-christa", name: "Christa Pichlhofer", date: "1977-04-22", emoji: "🌸", colorIndex: 0 }
+  ];
+  let stored = localStorage.getItem("geburtstage");
+  let entries = stored ? JSON.parse(stored) : [...DEFAULTS];
+  if (!stored) save();
   let selectedEmoji = EMOJIS[0];
 
   // ── RENDER ────────────────────────────────────────────────────────────
