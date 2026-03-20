@@ -290,7 +290,10 @@
 <script>
   // ── Firestore REST API (kein SDK nötig) ───────────────────────────
   const PROJECT = "geburtstage-c3e2b";
+  const API_KEY = "AIzaSyC7JeNtSTcVxeU87jtZRYb5eUCvys2Dlnk";
   const BASE    = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents/geburtstage`;
+
+  const JSON_HDR = { "Content-Type": "application/json" };
 
   function parseDoc(doc) {
     const id = doc.name.split("/").pop();
@@ -314,22 +317,24 @@
   }
 
   async function fsLoad() {
-    const res  = await fetch(BASE);
+    const res  = await fetch(`${BASE}?key=${API_KEY}`);
     const data = await res.json();
     return (data.documents || []).map(parseDoc);
   }
 
   async function fsAdd(e) {
-    await fetch(BASE, { method:"POST", headers:{"Content-Type":"application/json"}, body: toBody(e) });
+    const res = await fetch(`${BASE}?key=${API_KEY}`, { method:"POST", headers: JSON_HDR, body: toBody(e) });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || "Fehler beim Speichern"); }
   }
 
   async function fsUpdate(id, e) {
     const mask = "updateMask.fieldPaths=name&updateMask.fieldPaths=date&updateMask.fieldPaths=emoji";
-    await fetch(`${BASE}/${id}?${mask}`, { method:"PATCH", headers:{"Content-Type":"application/json"}, body: toBody(e) });
+    const res  = await fetch(`${BASE}/${id}?${mask}&key=${API_KEY}`, { method:"PATCH", headers: JSON_HDR, body: toBody(e) });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || "Fehler beim Bearbeiten"); }
   }
 
   async function fsDelete(id) {
-    await fetch(`${BASE}/${id}`, { method:"DELETE" });
+    await fetch(`${BASE}/${id}?key=${API_KEY}`, { method:"DELETE" });
   }
 
   // ── Defaults (einmalig wenn DB leer) ─────────────────────────────
