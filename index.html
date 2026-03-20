@@ -9,50 +9,52 @@
 
     :root {
       --bg: #f5f5f7;
-      --card: #ffffff;
+      --card: #fff;
       --text-primary: #1d1d1f;
       --text-secondary: #6e6e73;
       --accent: #007aff;
       --accent-hover: #0066cc;
       --danger: #ff3b30;
       --separator: rgba(0,0,0,0.08);
-      --shadow: 0 2px 20px rgba(0,0,0,0.08);
-      --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
-      --radius: 18px;
-      --radius-sm: 12px;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #000000;
+        --bg: #000;
         --card: #1c1c1e;
         --text-primary: #f5f5f7;
         --text-secondary: #98989d;
-        --separator: rgba(255,255,255,0.08);
-        --shadow: 0 2px 20px rgba(0,0,0,0.4);
-        --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+        --separator: rgba(255,255,255,0.1);
       }
     }
 
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
-      font-family: -apple-system, "SF Pro Display", "SF Pro Text", BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, "SF Pro Display", BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
       color: var(--text-primary);
-      min-height: 100vh;
       -webkit-font-smoothing: antialiased;
-    }
-
-    /* HEADER */
-    header {
-      padding: 52px 24px 0;
-      max-width: 680px;
-      margin: 0 auto;
       display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
+      flex-direction: column;
     }
 
-    header h1 {
+    /* ── HEADER ───────────────────────────────────────────────── */
+    header {
+      flex-shrink: 0;
+      padding: 48px 28px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 660px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    h1 {
       font-size: 34px;
       font-weight: 700;
       letter-spacing: -0.5px;
@@ -68,116 +70,135 @@
       border-radius: 980px;
       padding: 10px 18px;
       font-size: 15px;
-      font-weight: 590;
+      font-weight: 600;
       font-family: inherit;
       cursor: pointer;
       transition: background 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
     }
-    .btn-add:hover { background: var(--accent-hover); }
+    .btn-add:hover  { background: var(--accent-hover); }
     .btn-add:active { transform: scale(0.96); }
-    .btn-add svg { flex-shrink: 0; }
 
-    /* MAIN */
-    main {
-      max-width: 680px;
+    /* ── REEL SECTION ─────────────────────────────────────────── */
+    .reel-section {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      max-width: 660px;
+      width: 100%;
       margin: 0 auto;
-      padding: 28px 24px 60px;
     }
 
-    /* EMPTY STATE */
-    .empty {
-      text-align: center;
-      padding: 80px 0;
-      color: var(--text-secondary);
+    /* gradient masks */
+    .reel-section::before,
+    .reel-section::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      z-index: 5;
+      pointer-events: none;
     }
-    .empty .emoji { font-size: 52px; margin-bottom: 16px; }
-    .empty p { font-size: 17px; line-height: 1.5; }
-    .empty p strong { color: var(--text-primary); display: block; font-size: 20px; margin-bottom: 6px; }
-
-    /* SECTION LABELS */
-    .section-label {
-      font-size: 13px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-secondary);
-      margin: 28px 0 10px 4px;
+    .reel-section::before {
+      top: 0; height: 32%;
+      background: linear-gradient(to bottom, var(--bg) 5%, transparent);
     }
-    .section-label:first-child { margin-top: 0; }
+    .reel-section::after {
+      bottom: 0; height: 32%;
+      background: linear-gradient(to top, var(--bg) 5%, transparent);
+    }
 
-    /* CARDS */
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      margin-bottom: 10px;
+    /* center frame */
+    .reel-frame {
+      position: absolute;
+      left: 20px; right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 94px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(0,122,255,0.55);
+      background: rgba(0,122,255,0.035);
+      box-shadow: 0 0 0 1px rgba(0,122,255,0.08), 0 4px 28px rgba(0,122,255,0.12);
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    /* perspective wrapper */
+    .reel-perspective {
+      position: absolute;
+      inset: 0;
+      perspective: 700px;
+      perspective-origin: 50% 50%;
+    }
+
+    /* reel track */
+    .reel-track {
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      will-change: transform;
+    }
+
+    /* ── REEL ITEMS ───────────────────────────────────────────── */
+    .reel-item {
+      height: 106px;
       display: flex;
       align-items: center;
-      padding: 16px 20px;
+      padding: 0 28px;
       gap: 16px;
-      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: grab;
+      will-change: transform, opacity;
+      transform-origin: center center;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
-    .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+    .reel-item:active { cursor: grabbing; }
+    .reel-item.spacer { pointer-events: none; }
 
-    /* AVATAR */
     .avatar {
-      width: 52px;
-      height: 52px;
+      width: 54px; height: 54px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 25px;
       flex-shrink: 0;
     }
 
-    /* CARD CONTENT */
-    .card-info { flex: 1; min-width: 0; }
-    .card-name {
-      font-size: 17px;
-      font-weight: 590;
+    .item-info { flex: 1; min-width: 0; }
+    .item-name {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .card-date {
-      font-size: 14px;
+    .item-sub {
+      font-size: 13px;
       color: var(--text-secondary);
-      margin-top: 2px;
-    }
-
-    /* COUNTDOWN BADGE */
-    .countdown {
-      text-align: right;
-      flex-shrink: 0;
-    }
-    .countdown-days {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      line-height: 1;
-    }
-    .countdown-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
-    .countdown.today .countdown-days { color: var(--accent); }
-    .countdown.soon .countdown-days { color: #ff9f0a; }
-
-    /* TODAY BADGE */
-    .badge-today {
-      display: inline-block;
-      background: var(--accent);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 980px;
       margin-top: 3px;
     }
 
-    /* DELETE BUTTON */
+    .item-right {
+      text-align: right;
+      flex-shrink: 0;
+      min-width: 52px;
+    }
+    .count-num {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1;
+      color: var(--accent);
+    }
+    .count-lbl {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .count-today { font-size: 28px; line-height: 1; }
+
     .btn-delete {
       background: none;
       border: none;
@@ -187,16 +208,42 @@
       color: var(--text-secondary);
       transition: color 0.15s, background 0.15s;
       flex-shrink: 0;
+      line-height: 1;
     }
     .btn-delete:hover { color: var(--danger); background: rgba(255,59,48,0.1); }
 
-    /* MODAL OVERLAY */
-    .overlay {
-      position: fixed;
+    /* Avatar colors */
+    .c0 { background: #ffd6e7; }
+    .c1 { background: #d0f0fd; }
+    .c2 { background: #d4f7d4; }
+    .c3 { background: #fff3cd; }
+    .c4 { background: #e8d5ff; }
+    .c5 { background: #ffd9b3; }
+    .c6 { background: #d1ecf1; }
+    .c7 { background: #efefef; }
+
+    /* ── EMPTY STATE ──────────────────────────────────────────── */
+    .empty-state {
+      position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.45);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 40px;
+    }
+    .empty-state .e { font-size: 52px; margin-bottom: 16px; }
+    .empty-state strong { color: var(--text-primary); font-size: 20px; display: block; margin-bottom: 8px; }
+    .empty-state p { font-size: 16px; line-height: 1.5; }
+
+    /* ── MODAL ────────────────────────────────────────────────── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       display: flex;
       align-items: flex-end;
       justify-content: center;
@@ -207,11 +254,10 @@
     }
     .overlay.visible { opacity: 1; pointer-events: all; }
 
-    /* MODAL SHEET */
     .sheet {
       background: var(--card);
-      border-radius: var(--radius) var(--radius) 0 0;
-      padding: 8px 24px 40px;
+      border-radius: 20px 20px 0 0;
+      padding: 8px 24px 44px;
       width: 100%;
       max-width: 560px;
       transform: translateY(100%);
@@ -220,36 +266,27 @@
     .overlay.visible .sheet { transform: translateY(0); }
 
     .sheet-handle {
-      width: 36px;
-      height: 5px;
+      width: 36px; height: 5px;
       background: var(--separator);
       border-radius: 3px;
       margin: 10px auto 24px;
     }
+    .sheet h2 { font-size: 22px; font-weight: 700; margin-bottom: 24px; letter-spacing: -0.3px; }
 
-    .sheet h2 {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 24px;
-      letter-spacing: -0.3px;
-    }
-
-    /* FORM */
     .field { margin-bottom: 16px; }
     .field label {
       display: block;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px; font-weight: 600;
       color: var(--text-secondary);
       margin-bottom: 6px;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
     }
-    .field input, .field select {
+    .field input {
       width: 100%;
       background: var(--bg);
       border: 1.5px solid var(--separator);
-      border-radius: var(--radius-sm);
+      border-radius: 12px;
       padding: 13px 16px;
       font-size: 16px;
       font-family: inherit;
@@ -257,19 +294,11 @@
       outline: none;
       transition: border-color 0.15s;
     }
-    .field input:focus, .field select:focus {
-      border-color: var(--accent);
-    }
+    .field input:focus { border-color: var(--accent); }
 
-    .emoji-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 4px;
-    }
+    .emoji-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
     .emoji-btn {
-      width: 44px;
-      height: 44px;
+      width: 44px; height: 44px;
       border-radius: 10px;
       border: 2px solid transparent;
       background: var(--bg);
@@ -283,50 +312,27 @@
     .emoji-btn:hover { transform: scale(1.1); }
     .emoji-btn.selected { border-color: var(--accent); }
 
-    .sheet-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 24px;
-    }
+    .sheet-actions { display: flex; gap: 10px; margin-top: 24px; }
     .btn-cancel {
-      flex: 1;
-      padding: 14px;
-      border-radius: var(--radius-sm);
-      border: none;
+      flex: 1; padding: 14px;
+      border-radius: 12px; border: none;
       background: var(--bg);
       color: var(--text-primary);
-      font-size: 16px;
-      font-weight: 590;
-      font-family: inherit;
-      cursor: pointer;
+      font-size: 16px; font-weight: 600;
+      font-family: inherit; cursor: pointer;
       transition: opacity 0.15s;
     }
     .btn-cancel:hover { opacity: 0.7; }
     .btn-save {
-      flex: 2;
-      padding: 14px;
-      border-radius: var(--radius-sm);
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      font-size: 16px;
-      font-weight: 590;
-      font-family: inherit;
-      cursor: pointer;
+      flex: 2; padding: 14px;
+      border-radius: 12px; border: none;
+      background: var(--accent); color: #fff;
+      font-size: 16px; font-weight: 600;
+      font-family: inherit; cursor: pointer;
       transition: background 0.15s, transform 0.1s;
     }
-    .btn-save:hover { background: var(--accent-hover); }
+    .btn-save:hover  { background: var(--accent-hover); }
     .btn-save:active { transform: scale(0.97); }
-
-    /* COLORS */
-    .c0 { background: #ffd6e7; }
-    .c1 { background: #d0f0fd; }
-    .c2 { background: #d4f7d4; }
-    .c3 { background: #fff3cd; }
-    .c4 { background: #e8d5ff; }
-    .c5 { background: #ffd9b3; }
-    .c6 { background: #d1ecf1; }
-    .c7 { background: #f0f0f0; }
   </style>
 </head>
 <body>
@@ -334,247 +340,403 @@
 <header>
   <h1>Geburtstage</h1>
   <button class="btn-add" onclick="openModal()">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-      <path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2z"/>
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+      <path d="M7 1.75a.75.75 0 0 1 .75.75v3.75h3.75a.75.75 0 0 1 0 1.5H7.75v3.75a.75.75 0 0 1-1.5 0V7.75H2.5a.75.75 0 0 1 0-1.5h3.75V2.5A.75.75 0 0 1 7 1.75z"/>
     </svg>
     Hinzufügen
   </button>
 </header>
 
-<main id="list-container"></main>
+<div class="reel-section" id="reel-section">
+  <div class="reel-frame" id="reel-frame"></div>
+  <div class="reel-perspective">
+    <div class="reel-track" id="reel-track"></div>
+  </div>
+</div>
 
-<!-- MODAL -->
 <div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
-  <div class="sheet" id="sheet">
+  <div class="sheet">
     <div class="sheet-handle"></div>
     <h2>Geburtstag hinzufügen</h2>
-
     <div class="field">
       <label>Name</label>
       <input type="text" id="input-name" placeholder="z. B. Anna Müller" maxlength="40" />
     </div>
-
     <div class="field">
       <label>Geburtsdatum</label>
       <input type="date" id="input-date" />
     </div>
-
     <div class="field">
       <label>Emoji</label>
       <div class="emoji-row" id="emoji-picker"></div>
     </div>
-
     <div class="sheet-actions">
       <button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
-      <button class="btn-save" onclick="saveEntry()">Speichern</button>
+      <button class="btn-save"   onclick="saveEntry()">Speichern</button>
     </div>
   </div>
 </div>
 
 <script>
-  const EMOJIS = ["🎂","🎉","🎈","🥳","🌟","💫","🦋","🌸","🌈","🎁","🦄","🐶","🐱","🌺","🍀","⭐"];
-  const COLORS = 8; // c0–c7
+// ── CONFIG ─────────────────────────────────────────────────────────
+const ITEM_H    = 106;  // height of each reel item (px)
+const EMOJIS    = ["🎂","🎉","🎈","🥳","🌟","💫","🦋","🌸","🌈","🎁","🦄","🐶","🐱","🌺","🍀","⭐"];
+const N_COLORS  = 8;
+const MONTHS    = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
 
-  const DEFAULTS = [
-    { id: "default-markus",  name: "Markus Pichlhofer",  date: "1978-06-21", emoji: "🎂", colorIndex: 2 },
-    { id: "default-christa", name: "Christa Pichlhofer", date: "1977-04-22", emoji: "🌸", colorIndex: 0 },
-    { id: "default-marc",    name: "Marc Pichlhofer",   date: "2007-03-23", emoji: "🎉", colorIndex: 3 },
-    { id: "default-sven",    name: "Sven Pichlhofer",   date: "2004-04-28", emoji: "🌟", colorIndex: 4 }
-  ];
-  let stored = localStorage.getItem("geburtstage");
-  let entries = stored ? JSON.parse(stored) : [...DEFAULTS];
-  if (!stored) save();
-  let selectedEmoji = EMOJIS[0];
+// ── DATA ────────────────────────────────────────────────────────────
+const DEFAULTS = [
+  { id:"default-markus",  name:"Markus Pichlhofer",  date:"1978-06-21", emoji:"🎂", colorIndex:2 },
+  { id:"default-christa", name:"Christa Pichlhofer", date:"1977-04-22", emoji:"🌸", colorIndex:0 },
+  { id:"default-marc",    name:"Marc Pichlhofer",    date:"2007-03-23", emoji:"🎉", colorIndex:3 },
+  { id:"default-sven",    name:"Sven Pichlhofer",    date:"2004-04-28", emoji:"🌟", colorIndex:4 }
+];
 
-  // ── RENDER ────────────────────────────────────────────────────────────
-  function render() {
-    const container = document.getElementById("list-container");
-    if (entries.length === 0) {
-      container.innerHTML = `
-        <div class="empty">
-          <div class="emoji">🎂</div>
-          <p><strong>Keine Geburtstage</strong>Füge Geburtstage hinzu,<br>damit du nie wieder einen vergisst.</p>
-        </div>`;
-      return;
-    }
+let stored  = localStorage.getItem("geburtstage");
+let entries = stored ? JSON.parse(stored) : [...DEFAULTS];
+if (!stored) persist();
 
-    const today = toDateOnly(new Date());
-    const sorted = entries
-      .map(e => ({ ...e, days: daysUntil(e.date) }))
-      .sort((a, b) => a.days - b.days);
+// ── STATE ───────────────────────────────────────────────────────────
+let sorted      = [];
+let currentIdx  = 0;
+let trackOffset = 0;
+let reelH       = 0;
+let numSpacers  = 0;
+let animFrame   = null;
+let selectedEmoji = EMOJIS[0];
 
-    const todayItems  = sorted.filter(e => e.days === 0);
-    const upcomingItems = sorted.filter(e => e.days > 0 && e.days <= 30);
-    const laterItems  = sorted.filter(e => e.days > 30);
+// drag state
+let isDragging      = false;
+let dragStartY      = 0;
+let dragStartOffset = 0;
+let lastDragY       = 0;
+let dragVelocity    = 0;
 
-    let html = "";
-    if (todayItems.length)   html += section("Heute 🎉", todayItems);
-    if (upcomingItems.length) html += section("Bald", upcomingItems);
-    if (laterItems.length)   html += section("Später", laterItems);
+// ── DATE HELPERS ────────────────────────────────────────────────────
+function today0() {
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  return d;
+}
 
-    container.innerHTML = html;
-  }
+function daysUntil(dateStr) {
+  const now = today0();
+  const [y,m,d] = dateStr.split("-").map(Number);
+  let next = new Date(now.getFullYear(), m-1, d);
+  if (next < now) next.setFullYear(now.getFullYear() + 1);
+  return Math.round((next - now) / 86400000);
+}
 
-  function section(title, items) {
-    return `<div class="section-label">${title}</div>` + items.map(card).join("");
-  }
+function nextAge(dateStr) {
+  const now = today0();
+  const [y,m,d] = dateStr.split("-").map(Number);
+  let next = new Date(now.getFullYear(), m-1, d);
+  if (next < now) next.setFullYear(now.getFullYear() + 1);
+  return next.getFullYear() - y;
+}
 
-  function card(e) {
-    const days = e.days;
-    const age  = nextAge(e.date);
-    const dateStr = formatDate(e.date);
-    const colorClass = "c" + (e.colorIndex ?? 0);
+function fmtDate(dateStr) {
+  const [y,m,d] = dateStr.split("-").map(Number);
+  return `${d}. ${MONTHS[m-1]} ${y}`;
+}
 
-    let countdownHtml;
-    if (days === 0) {
-      countdownHtml = `<div class="countdown today">
-        <div class="countdown-days">🎂</div>
-        <span class="badge-today">${age}. Geburtstag!</span>
-      </div>`;
+function esc(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// ── REEL MATH ───────────────────────────────────────────────────────
+function offsetForIdx(idx) {
+  // translateY so that item `idx` is centered in the viewport
+  return reelH / 2 - (idx + numSpacers + 0.5) * ITEM_H;
+}
+
+function fracIdxAtOffset(offset) {
+  // fractional real-item index at the center of viewport
+  return (reelH / 2 - offset) / ITEM_H - numSpacers - 0.5;
+}
+
+function updateTransforms(offset) {
+  const centerPos = (reelH / 2 - offset) / ITEM_H; // fractional track pos at center
+  document.querySelectorAll(".reel-item:not(.spacer)").forEach((el, i) => {
+    const pos  = i + numSpacers + 0.5;           // center of item in track units
+    const dist = pos - centerPos;                 // distance from center (in items)
+    const absD = Math.abs(dist);
+
+    const rotX    = Math.max(-72, Math.min(72, -dist * 26));
+    const scale   = Math.max(1 - absD * 0.11, 0.52);
+    const opacity = Math.max(1 - absD * 0.31, 0.07);
+
+    el.style.transform = `rotateX(${rotX}deg) scale(${scale})`;
+    el.style.opacity   = opacity;
+  });
+}
+
+// ── ANIMATION ───────────────────────────────────────────────────────
+function cancelAnim() {
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+}
+
+function animateTo(idx, duration = 480, easing = easeOutCubic, onDone) {
+  cancelAnim();
+  idx = Math.max(0, Math.min(sorted.length - 1, idx));
+  const target = offsetForIdx(idx);
+  const start  = trackOffset;
+  const t0     = performance.now();
+  const track  = document.getElementById("reel-track");
+
+  (function tick(now) {
+    const p = Math.min((now - t0) / duration, 1);
+    trackOffset = start + (target - start) * easing(p);
+    track.style.transform = `translateY(${trackOffset}px)`;
+    updateTransforms(trackOffset);
+    if (p < 1) {
+      animFrame = requestAnimationFrame(tick);
     } else {
-      const label = days === 1 ? "Tag" : "Tage";
-      const soonClass = days <= 7 ? " soon" : "";
-      countdownHtml = `<div class="countdown${soonClass}">
-        <div class="countdown-days">${days}</div>
-        <div class="countdown-label">${label}</div>
-      </div>`;
+      trackOffset = target;
+      currentIdx  = idx;
+      animFrame   = null;
+      if (onDone) onDone();
     }
+  })(t0);
+}
 
-    return `<div class="card" data-id="${e.id}">
-      <div class="avatar ${colorClass}">${e.emoji}</div>
-      <div class="card-info">
-        <div class="card-name">${esc(e.name)}</div>
-        <div class="card-date">${dateStr} · wird ${age}</div>
+function slotSpin(targetIdx) {
+  // Start far below → roll up and snap
+  cancelAnim();
+  targetIdx = Math.max(0, Math.min(sorted.length - 1, targetIdx));
+  const target = offsetForIdx(targetIdx);
+  const spin   = target - ITEM_H * Math.max(sorted.length + 3, 6);
+
+  trackOffset  = spin;
+  const track  = document.getElementById("reel-track");
+  track.style.transform = `translateY(${spin}px)`;
+  updateTransforms(spin);
+
+  const t0 = performance.now();
+  const dur = 1300;
+
+  (function tick(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    // fast-to-slow: 1 - (1-t)^2.8
+    const e = 1 - Math.pow(1 - p, 2.8);
+    trackOffset = spin + (target - spin) * e;
+    track.style.transform = `translateY(${trackOffset}px)`;
+    updateTransforms(trackOffset);
+    if (p < 1) {
+      animFrame = requestAnimationFrame(tick);
+    } else {
+      trackOffset = target;
+      currentIdx  = targetIdx;
+      animFrame   = null;
+    }
+  })(t0);
+}
+
+function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+// ── RENDER ──────────────────────────────────────────────────────────
+function computeSorted() {
+  sorted = entries
+    .map(e => ({ ...e, days: daysUntil(e.date), age: nextAge(e.date) }))
+    .sort((a, b) => a.days - b.days);
+}
+
+function buildTrack() {
+  const section = document.getElementById("reel-section");
+  reelH      = section.clientHeight;
+  numSpacers = Math.max(3, Math.ceil(reelH / ITEM_H / 2) + 1);
+
+  const track = document.getElementById("reel-track");
+
+  // empty state
+  const existingEmpty = document.getElementById("empty-state");
+  if (sorted.length === 0) {
+    document.getElementById("reel-frame").style.opacity = "0";
+    track.innerHTML = "";
+    if (!existingEmpty) {
+      const el = document.createElement("div");
+      el.id = "empty-state";
+      el.className = "empty-state";
+      el.innerHTML = `<div class="e">🎂</div><strong>Keine Geburtstage</strong><p>Füge Geburtstage hinzu,<br>damit du nie wieder einen vergisst.</p>`;
+      section.appendChild(el);
+    }
+    return;
+  }
+  if (existingEmpty) existingEmpty.remove();
+  document.getElementById("reel-frame").style.opacity = "1";
+
+  let html = "";
+  for (let i = 0; i < numSpacers; i++) html += `<div class="reel-item spacer"></div>`;
+
+  sorted.forEach((e, i) => {
+    const cc = "c" + (e.colorIndex ?? 0);
+    const right = e.days === 0
+      ? `<div class="item-right"><div class="count-today">🎂</div><div class="count-lbl">Heute!</div></div>`
+      : `<div class="item-right"><div class="count-num">${e.days}</div><div class="count-lbl">${e.days === 1 ? "Tag" : "Tage"}</div></div>`;
+
+    html += `
+    <div class="reel-item" data-idx="${i}">
+      <div class="avatar ${cc}">${e.emoji}</div>
+      <div class="item-info">
+        <div class="item-name">${esc(e.name)}</div>
+        <div class="item-sub">${fmtDate(e.date)} · wird ${e.age}</div>
       </div>
-      ${countdownHtml}
+      ${right}
       <button class="btn-delete" onclick="deleteEntry('${e.id}')" title="Löschen">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
-          <path d="M6.5 1.5A1.5 1.5 0 0 1 8 0h2a1.5 1.5 0 0 1 1.5 1.5V2h3a.75.75 0 0 1 0 1.5h-.5l-.7 11.2A2 2 0 0 1 11.3 16.5H6.7a2 2 0 0 1-2-1.8L4 3.5H3.5A.75.75 0 0 1 3.5 2h3v-.5zm1.5 0V2h2v-.5A.5.5 0 0 0 10 1H8a.5.5 0 0 0-.5.5zM5.5 3.5l.69 10.9a.5.5 0 0 0 .5.6h4.62a.5.5 0 0 0 .5-.6L12.5 3.5h-7z"/>
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="currentColor">
+          <path d="M6 1.5A1.5 1.5 0 0 1 7.5 0h2A1.5 1.5 0 0 1 11 1.5V2h3a.75.75 0 0 1 0 1.5h-.43l-.63 10.6A2 2 0 0 1 11 16H6a2 2 0 0 1-2-1.9L3.43 3.5H3A.75.75 0 0 1 3 2h3v-.5zm1.5 0V2h2v-.5A.5.5 0 0 0 9 1H7.5a.5.5 0 0 0-.5.5zM5 3.5l.62 10.4a.5.5 0 0 0 .5.6h4.76a.5.5 0 0 0 .5-.6L12 3.5H5z"/>
         </svg>
       </button>
     </div>`;
-  }
-
-  // ── DATE HELPERS ──────────────────────────────────────────────────────
-  function toDateOnly(d) {
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  }
-
-  function daysUntil(dateStr) {
-    const today = toDateOnly(new Date());
-    const [y, m, d] = dateStr.split("-").map(Number);
-    let next = new Date(today.getFullYear(), m - 1, d);
-    if (next < today) next.setFullYear(today.getFullYear() + 1);
-    return Math.round((next - today) / 86400000);
-  }
-
-  function nextAge(dateStr) {
-    const today = toDateOnly(new Date());
-    const [y, m, d] = dateStr.split("-").map(Number);
-    let next = new Date(today.getFullYear(), m - 1, d);
-    if (next < today) next.setFullYear(today.getFullYear() + 1);
-    return next.getFullYear() - y;
-  }
-
-  function formatDate(dateStr) {
-    const [y, m, d] = dateStr.split("-").map(Number);
-    return `${d}. ${["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"][m-1]} ${y}`;
-  }
-
-  function esc(s) {
-    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  }
-
-  // ── MODAL ─────────────────────────────────────────────────────────────
-  function openModal() {
-    document.getElementById("overlay").classList.add("visible");
-    document.getElementById("input-name").focus();
-  }
-
-  function closeModal() {
-    document.getElementById("overlay").classList.remove("visible");
-    document.getElementById("input-name").value = "";
-    document.getElementById("input-date").value = "";
-    selectedEmoji = EMOJIS[0];
-    updateEmojiPicker();
-  }
-
-  function handleOverlayClick(e) {
-    if (e.target === document.getElementById("overlay")) closeModal();
-  }
-
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape") closeModal();
   });
 
-  // ── EMOJI PICKER ──────────────────────────────────────────────────────
-  function buildEmojiPicker() {
-    const row = document.getElementById("emoji-picker");
-    row.innerHTML = EMOJIS.map(em => `
-      <button class="emoji-btn ${em === selectedEmoji ? "selected" : ""}"
-              onclick="selectEmoji('${em}')">${em}</button>
-    `).join("");
+  for (let i = 0; i < numSpacers; i++) html += `<div class="reel-item spacer"></div>`;
+  track.innerHTML = html;
+}
+
+// ── DRAG ────────────────────────────────────────────────────────────
+function setupDrag() {
+  const section = document.getElementById("reel-section");
+  section.addEventListener("mousedown",  e => startDrag(e.clientY));
+  section.addEventListener("touchstart", e => startDrag(e.touches[0].clientY), { passive: true });
+  document.addEventListener("mousemove",  e => drag(e.clientY));
+  document.addEventListener("touchmove",  e => { if (isDragging) { e.preventDefault(); drag(e.touches[0].clientY); } }, { passive: false });
+  document.addEventListener("mouseup",   endDrag);
+  document.addEventListener("touchend",  endDrag);
+}
+
+function startDrag(y) {
+  if (sorted.length === 0) return;
+  cancelAnim();
+  isDragging      = true;
+  dragStartY      = y;
+  dragStartOffset = trackOffset;
+  lastDragY       = y;
+  dragVelocity    = 0;
+}
+
+function drag(y) {
+  if (!isDragging) return;
+  dragVelocity = y - lastDragY;
+  lastDragY    = y;
+
+  const lo  = offsetForIdx(sorted.length - 1) - ITEM_H * 0.5;
+  const hi  = offsetForIdx(0) + ITEM_H * 0.5;
+  trackOffset = Math.max(lo, Math.min(hi, dragStartOffset + (y - dragStartY)));
+
+  document.getElementById("reel-track").style.transform = `translateY(${trackOffset}px)`;
+  updateTransforms(trackOffset);
+}
+
+function endDrag() {
+  if (!isDragging) return;
+  isDragging = false;
+
+  // momentum nudge
+  const nudged    = trackOffset + dragVelocity * 3.5;
+  const fracIdx   = fracIdxAtOffset(nudged);
+  const nearestIdx = Math.max(0, Math.min(sorted.length - 1, Math.round(fracIdx)));
+  animateTo(nearestIdx, 350);
+}
+
+// ── CRUD ────────────────────────────────────────────────────────────
+function persist() { localStorage.setItem("geburtstage", JSON.stringify(entries)); }
+
+function deleteEntry(id) {
+  entries = entries.filter(e => e.id !== id);
+  persist();
+  computeSorted();
+  currentIdx = Math.max(0, Math.min(sorted.length - 1, currentIdx));
+  buildTrack();
+  if (sorted.length > 0) {
+    trackOffset = offsetForIdx(currentIdx);
+    document.getElementById("reel-track").style.transform = `translateY(${trackOffset}px)`;
+    updateTransforms(trackOffset);
   }
+}
 
-  function updateEmojiPicker() {
-    document.querySelectorAll(".emoji-btn").forEach(btn => {
-      btn.classList.toggle("selected", btn.textContent === selectedEmoji);
-    });
+// ── MODAL ───────────────────────────────────────────────────────────
+function openModal() {
+  document.getElementById("overlay").classList.add("visible");
+  setTimeout(() => document.getElementById("input-name").focus(), 350);
+}
+
+function closeModal() {
+  document.getElementById("overlay").classList.remove("visible");
+  document.getElementById("input-name").value = "";
+  document.getElementById("input-date").value  = "";
+  selectedEmoji = EMOJIS[0];
+  syncEmojiPicker();
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById("overlay")) closeModal();
+}
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+function buildEmojiPicker() {
+  document.getElementById("emoji-picker").innerHTML = EMOJIS.map(em =>
+    `<button class="emoji-btn ${em === selectedEmoji ? "selected" : ""}" onclick="selectEmoji('${em}')">${em}</button>`
+  ).join("");
+}
+
+function syncEmojiPicker() {
+  document.querySelectorAll(".emoji-btn").forEach(b => b.classList.toggle("selected", b.textContent === selectedEmoji));
+}
+
+function selectEmoji(em) { selectedEmoji = em; syncEmojiPicker(); }
+
+function saveEntry() {
+  const name = document.getElementById("input-name").value.trim();
+  const date = document.getElementById("input-date").value;
+  if (!name) { shake("input-name"); return; }
+  if (!date) { shake("input-date"); return; }
+
+  const newId = crypto.randomUUID();
+  entries.push({ id: newId, name, date, emoji: selectedEmoji, colorIndex: Math.floor(Math.random() * N_COLORS) });
+  persist();
+  closeModal();
+
+  computeSorted();
+  buildTrack();
+  const idx = sorted.findIndex(e => e.id === newId);
+  animateTo(idx >= 0 ? idx : 0, 600);
+}
+
+function shake(id) {
+  const el = document.getElementById(id);
+  el.style.borderColor = "var(--danger)";
+  el.animate([
+    { transform: "translateX(0)" },
+    { transform: "translateX(-6px)" },
+    { transform: "translateX(6px)" },
+    { transform: "translateX(-4px)" },
+    { transform: "translateX(0)" }
+  ], { duration: 300 });
+  setTimeout(() => el.style.borderColor = "", 800);
+}
+
+// ── INIT ────────────────────────────────────────────────────────────
+buildEmojiPicker();
+setupDrag();
+
+window.addEventListener("DOMContentLoaded", () => {
+  computeSorted();
+  buildTrack();
+  if (sorted.length > 0) slotSpin(0); // spin to first (next) birthday
+});
+
+window.addEventListener("resize", () => {
+  cancelAnim();
+  buildTrack();
+  if (sorted.length > 0) {
+    currentIdx  = Math.max(0, Math.min(sorted.length - 1, currentIdx));
+    trackOffset = offsetForIdx(currentIdx);
+    document.getElementById("reel-track").style.transform = `translateY(${trackOffset}px)`;
+    updateTransforms(trackOffset);
   }
-
-  function selectEmoji(em) {
-    selectedEmoji = em;
-    updateEmojiPicker();
-  }
-
-  // ── CRUD ──────────────────────────────────────────────────────────────
-  function saveEntry() {
-    const name = document.getElementById("input-name").value.trim();
-    const date = document.getElementById("input-date").value;
-
-    if (!name) { shake("input-name"); return; }
-    if (!date) { shake("input-date"); return; }
-
-    const entry = {
-      id: crypto.randomUUID(),
-      name,
-      date,
-      emoji: selectedEmoji,
-      colorIndex: Math.floor(Math.random() * COLORS)
-    };
-
-    entries.push(entry);
-    save();
-    render();
-    closeModal();
-  }
-
-  function deleteEntry(id) {
-    entries = entries.filter(e => e.id !== id);
-    save();
-    render();
-  }
-
-  function save() {
-    localStorage.setItem("geburtstage", JSON.stringify(entries));
-  }
-
-  function shake(id) {
-    const el = document.getElementById(id);
-    el.style.borderColor = "var(--danger)";
-    el.animate([
-      { transform: "translateX(0)" },
-      { transform: "translateX(-6px)" },
-      { transform: "translateX(6px)" },
-      { transform: "translateX(-4px)" },
-      { transform: "translateX(0)" }
-    ], { duration: 300, easing: "ease-out" });
-    setTimeout(() => el.style.borderColor = "", 800);
-  }
-
-  // ── INIT ──────────────────────────────────────────────────────────────
-  buildEmojiPicker();
-  render();
+});
 </script>
 </body>
 </html>
