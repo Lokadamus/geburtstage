@@ -173,7 +173,7 @@
     }
 
     /* ── DELETE BUTTON ──────────────────────────────────────────── */
-    .btn-delete {
+    .btn-delete, .btn-edit {
       background: none;
       border: none;
       cursor: pointer;
@@ -184,6 +184,7 @@
       flex-shrink: 0;
     }
     .btn-delete:hover { color: var(--danger); background: rgba(255,59,48,0.1); }
+    .btn-edit:hover   { color: var(--accent); background: rgba(0,122,255,0.1); }
 
     /* ── EMPTY STATE ────────────────────────────────────────────── */
     .empty {
@@ -318,7 +319,7 @@
 <div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <h2>Geburtstag hinzufügen</h2>
+    <h2 id="modal-title">Geburtstag hinzufügen</h2>
     <div class="field">
       <label>Name</label>
       <input type="text" id="input-name" placeholder="z. B. Anna Müller" maxlength="40" />
@@ -355,6 +356,7 @@
   if (!stored) persist();
 
   let selectedEmoji = EMOJIS[0];
+  let editId = null; // null = add mode, string = edit mode
 
   // ── DATE HELPERS ──────────────────────────────────────────────
   function today0() { const d = new Date(); d.setHours(0,0,0,0); return d; }
@@ -456,6 +458,11 @@
         <div class="card-date">${fmtDate(e.date)} · wird ${e.age}</div>
       </div>
       ${countdownHtml}
+      <button class="btn-edit" onclick="editEntry('${e.id}')" title="Bearbeiten">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+          <path d="M12.854 1.146a1.5 1.5 0 0 1 2.121 0l1.879 1.879a1.5 1.5 0 0 1 0 2.121L5.5 16.5H1.5v-4L12.854 1.146zm1.06 1.061a.5.5 0 0 0-.707 0L2.5 12.914V15h2.086l10.707-10.707a.5.5 0 0 0 0-.707l-1.379-1.379z"/>
+        </svg>
+      </button>
       <button class="btn-delete" onclick="deleteEntry('${e.id}')" title="Löschen">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
           <path d="M6.5 1.5A1.5 1.5 0 0 1 8 0h2a1.5 1.5 0 0 1 1.5 1.5V2h3a.75.75 0 0 1 0 1.5h-.5l-.7 11.2A2 2 0 0 1 11.3 16.5H6.7a2 2 0 0 1-2-1.8L4 3.5H3.5A.75.75 0 0 1 3.5 2h3v-.5zm1.5 0V2h2v-.5A.5.5 0 0 0 10 1H8a.5.5 0 0 0-.5.5zM5.5 3.5l.69 10.9a.5.5 0 0 0 .5.6h4.62a.5.5 0 0 0 .5-.6L12.5 3.5h-7z"/>
@@ -475,6 +482,21 @@
 
   // ── MODAL ─────────────────────────────────────────────────────
   function openModal() {
+    document.getElementById("modal-title").textContent = "Geburtstag hinzufügen";
+    editId = null;
+    document.getElementById("overlay").classList.add("visible");
+    setTimeout(() => document.getElementById("input-name").focus(), 350);
+  }
+
+  function editEntry(id) {
+    const e = entries.find(x => x.id === id);
+    if (!e) return;
+    editId = id;
+    document.getElementById("modal-title").textContent = "Geburtstag bearbeiten";
+    document.getElementById("input-name").value = e.name;
+    document.getElementById("input-date").value  = e.date;
+    selectedEmoji = e.emoji;
+    syncEmojiPicker();
     document.getElementById("overlay").classList.add("visible");
     setTimeout(() => document.getElementById("input-name").focus(), 350);
   }
@@ -483,6 +505,7 @@
     document.getElementById("overlay").classList.remove("visible");
     document.getElementById("input-name").value = "";
     document.getElementById("input-date").value  = "";
+    editId = null;
     selectedEmoji = EMOJIS[0];
     syncEmojiPicker();
   }
@@ -510,7 +533,16 @@
     const date = document.getElementById("input-date").value;
     if (!name) { shake("input-name"); return; }
     if (!date) { shake("input-date"); return; }
-    entries.push({ id: crypto.randomUUID(), name, date, emoji: selectedEmoji, colorIndex: Math.floor(Math.random() * N_COLORS) });
+
+    if (editId) {
+      const idx = entries.findIndex(e => e.id === editId);
+      if (idx !== -1) {
+        entries[idx] = { ...entries[idx], name, date, emoji: selectedEmoji };
+      }
+    } else {
+      entries.push({ id: crypto.randomUUID(), name, date, emoji: selectedEmoji, colorIndex: Math.floor(Math.random() * N_COLORS) });
+    }
+
     persist();
     closeModal();
     render();
