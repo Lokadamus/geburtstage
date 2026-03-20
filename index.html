@@ -351,9 +351,17 @@
     { id:"default-sven",    name:"Sven Pichlhofer",    date:"2004-04-28", emoji:"🌟", colorIndex:4 }
   ];
 
-  let stored  = localStorage.getItem("geburtstage");
-  let entries = stored ? JSON.parse(stored) : [...DEFAULTS];
-  if (!stored) persist();
+  // IDs von DEFAULTS die der User explizit gelöscht hat (pro Gerät)
+  let deletedDefaults = JSON.parse(localStorage.getItem("geburtstage_deleted") || "[]");
+
+  // Gespeicherte User-Einträge laden
+  let stored  = JSON.parse(localStorage.getItem("geburtstage") || "[]");
+  const storedIds = new Set(stored.map(e => e.id));
+
+  // DEFAULTS die noch nicht gespeichert & nicht gelöscht sind, immer einblenden
+  const missingDefaults = DEFAULTS.filter(d => !storedIds.has(d.id) && !deletedDefaults.includes(d.id));
+  let entries = [...stored, ...missingDefaults];
+  persist();
 
   let selectedEmoji = EMOJIS[0];
   let editId = null; // null = add mode, string = edit mode
@@ -475,6 +483,11 @@
   function persist() { localStorage.setItem("geburtstage", JSON.stringify(entries)); }
 
   function deleteEntry(id) {
+    // Wenn es ein DEFAULT-Eintrag ist, merken dass er gelöscht wurde
+    if (DEFAULTS.find(d => d.id === id)) {
+      deletedDefaults.push(id);
+      localStorage.setItem("geburtstage_deleted", JSON.stringify(deletedDefaults));
+    }
     entries = entries.filter(e => e.id !== id);
     persist();
     render();
