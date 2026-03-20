@@ -52,6 +52,8 @@
 
     h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; }
 
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+
     .btn-add {
       display: flex;
       align-items: center;
@@ -69,6 +71,24 @@
     }
     .btn-add:hover  { background: var(--accent-hover); }
     .btn-add:active { transform: scale(0.96); }
+
+    .btn-cal {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+      border-radius: 980px;
+      padding: 9px 16px;
+      font-size: 15px;
+      font-weight: 590;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-cal:hover  { background: rgba(0,122,255,0.08); }
+    .btn-cal:active { transform: scale(0.96); }
 
     main {
       max-width: 680px;
@@ -252,12 +272,20 @@
 
 <header>
   <h1>Geburtstage</h1>
-  <button class="btn-add" onclick="window.openModal()">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-      <path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2z"/>
-    </svg>
-    Hinzufügen
-  </button>
+  <div class="header-actions">
+    <button class="btn-cal" onclick="window.exportCalendar()" title="Als ICS exportieren">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1zm2 2h2v2H3V6zm0 3h2v2H3V9zm3-3h2v2H6V6zm0 3h2v2H6V9zm3-3h2v2H9V6zm0 3h2v2H9V9z"/>
+      </svg>
+      Kalender
+    </button>
+    <button class="btn-add" onclick="window.openModal()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2z"/>
+      </svg>
+      Hinzufügen
+    </button>
+  </div>
 </header>
 
 <main id="list-container">
@@ -573,7 +601,46 @@
     setTimeout(() => el.style.borderColor = "", 800);
   }
 
+  // ── Kalender Export (ICS) ─────────────────────────────────────────
+  window.exportCalendar = () => {
+    if (entries.length === 0) { alert("Keine Geburtstage zum Exportieren."); return; }
+
+    const lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Geburtstage App//DE",
+      "CALSCALE:GREGORIAN",
+      "METHOD:PUBLISH",
+    ];
+
+    entries.forEach(e => {
+      const [y, m, d] = e.date.split("-");
+      const dtstart   = `${y}${m}${d}`; // z.B. 19780621
+      const uid       = `${e.id}@geburtstage`;
+      lines.push(
+        "BEGIN:VEVENT",
+        `UID:${uid}`,
+        `DTSTART;VALUE=DATE:${dtstart}`,
+        "RRULE:FREQ=YEARLY",
+        `SUMMARY:${e.emoji} ${e.name}`,
+        `DESCRIPTION:Geburtstag von ${e.name}`,
+        "TRANSP:TRANSPARENT",
+        "END:VEVENT"
+      );
+    });
+
+    lines.push("END:VCALENDAR");
+
+    const blob = new Blob([lines.join("\r\n")], { type: "text/calendar;charset=utf-8" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = "geburtstage.ics";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   buildEmojiPicker();
-  </script>
+</script>
 </body>
 </html>
