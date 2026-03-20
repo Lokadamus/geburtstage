@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geburtstage</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f5f7;
+      --card: #ffffff;
+      --text-primary: #1d1d1f;
+      --text-secondary: #6e6e73;
+      --accent: #007aff;
+      --accent-hover: #0066cc;
+      --danger: #ff3b30;
+      --separator: rgba(0,0,0,0.08);
+      --shadow: 0 2px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+      --radius: 18px;
+      --radius-sm: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000000;
+        --card: #1c1c1e;
+        --text-primary: #f5f5f7;
+        --text-secondary: #98989d;
+        --separator: rgba(255,255,255,0.08);
+        --shadow: 0 2px 20px rgba(0,0,0,0.4);
+        --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+      }
+    }
+
+    body {
+      font-family: -apple-system, "SF Pro Display", "SF Pro Text", BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* HEADER */
+    header {
+      padding: 52px 24px 0;
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .btn-add {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 980px;
+      padding: 10px 18px;
+      font-size: 15px;
+      font-weight: 590;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-add:hover { background: var(--accent-hover); }
+    .btn-add:active { transform: scale(0.96); }
+    .btn-add svg { flex-shrink: 0; }
+
+    /* MAIN */
+    main {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
+    }
+
+    /* EMPTY STATE */
+    .empty {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--text-secondary);
+    }
+    .empty .emoji { font-size: 52px; margin-bottom: 16px; }
+    .empty p { font-size: 17px; line-height: 1.5; }
+    .empty p strong { color: var(--text-primary); display: block; font-size: 20px; margin-bottom: 6px; }
+
+    /* SECTION LABELS */
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin: 28px 0 10px 4px;
+    }
+    .section-label:first-child { margin-top: 0; }
+
+    /* CARDS */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      gap: 16px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+
+    /* AVATAR */
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    /* CARD CONTENT */
+    .card-info { flex: 1; min-width: 0; }
+    .card-name {
+      font-size: 17px;
+      font-weight: 590;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-date {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* COUNTDOWN BADGE */
+    .countdown {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .countdown-days {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .countdown-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .countdown.today .countdown-days { color: var(--accent); }
+    .countdown.soon .countdown-days { color: #ff9f0a; }
+
+    /* TODAY BADGE */
+    .badge-today {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 980px;
+      margin-top: 3px;
+    }
+
+    /* DELETE BUTTON */
+    .btn-delete {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      transition: color 0.15s, background 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-delete:hover { color: var(--danger); background: rgba(255,59,48,0.1); }
+
+    /* MODAL OVERLAY */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .overlay.visible { opacity: 1; pointer-events: all; }
+
+    /* MODAL SHEET */
+    .sheet {
+      background: var(--card);
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 8px 24px 40px;
+      width: 100%;
+      max-width: 560px;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.1, 0.64, 1);
+    }
+    .overlay.visible .sheet { transform: translateY(0); }
+
+    .sheet-handle {
+      width: 36px;
+      height: 5px;
+      background: var(--separator);
+      border-radius: 3px;
+      margin: 10px auto 24px;
+    }
+
+    .sheet h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: -0.3px;
+    }
+
+    /* FORM */
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .field input, .field select {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--separator);
+      border-radius: var(--radius-sm);
+      padding: 13px 16px;
+      font-size: 16px;
+      font-family: inherit;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus, .field select:focus {
+      border-color: var(--accent);
+    }
+
+    .emoji-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .emoji-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background: var(--bg);
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.12s, transform 0.1s;
+    }
+    .emoji-btn:hover { transform: scale(1.1); }
+    .emoji-btn.selected { border-color: var(--accent); }
+
+    .sheet-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .btn-cancel {
+      flex: 1;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--bg);
+      color: var(--text-primary);
+      font-size: 16px;
+      font-weight: 590;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-cancel:hover { opacity: 0.7; }
+    .btn-save {
+      flex: 2;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 590;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-save:hover { background: var(--accent-hover); }
+    .btn-save:active { transform: scale(0.97); }
+
+    /* COLORS */
+    .c0 { background: #ffd6e7; }
+    .c1 { background: #d0f0fd; }
+    .c2 { background: #d4f7d4; }
+    .c3 { background: #fff3cd; }
+    .c4 { background: #e8d5ff; }
+    .c5 { background: #ffd9b3; }
+    .c6 { background: #d1ecf1; }
+    .c7 { background: #f0f0f0; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Geburtstage</h1>
+  <button class="btn-add" onclick="openModal()">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2z"/>
+    </svg>
+    Hinzufügen
+  </button>
+</header>
+
+<main id="list-container"></main>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Geburtstag hinzufügen</h2>
+
+    <div class="field">
+      <label>Name</label>
+      <input type="text" id="input-name" placeholder="z. B. Anna Müller" maxlength="40" />
+    </div>
+
+    <div class="field">
+      <label>Geburtsdatum</label>
+      <input type="date" id="input-date" />
+    </div>
+
+    <div class="field">
+      <label>Emoji</label>
+      <div class="emoji-row" id="emoji-picker"></div>
+    </div>
+
+    <div class="sheet-actions">
+      <button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
+      <button class="btn-save" onclick="saveEntry()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const EMOJIS = ["🎂","🎉","🎈","🥳","🌟","💫","🦋","🌸","🌈","🎁","🦄","🐶","🐱","🌺","🍀","⭐"];
+  const COLORS = 8; // c0–c7
+
+  let entries = JSON.parse(localStorage.getItem("geburtstage") || "[]");
+  let selectedEmoji = EMOJIS[0];
+
+  // ── RENDER ────────────────────────────────────────────────────────────
+  function render() {
+    const container = document.getElementById("list-container");
+    if (entries.length === 0) {
+      container.innerHTML = `
+        <div class="empty">
+          <div class="emoji">🎂</div>
+          <p><strong>Keine Geburtstage</strong>Füge Geburtstage hinzu,<br>damit du nie wieder einen vergisst.</p>
+        </div>`;
+      return;
+    }
+
+    const today = toDateOnly(new Date());
+    const sorted = entries
+      .map(e => ({ ...e, days: daysUntil(e.date) }))
+      .sort((a, b) => a.days - b.days);
+
+    const todayItems  = sorted.filter(e => e.days === 0);
+    const upcomingItems = sorted.filter(e => e.days > 0 && e.days <= 30);
+    const laterItems  = sorted.filter(e => e.days > 30);
+
+    let html = "";
+    if (todayItems.length)   html += section("Heute 🎉", todayItems);
+    if (upcomingItems.length) html += section("Bald", upcomingItems);
+    if (laterItems.length)   html += section("Später", laterItems);
+
+    container.innerHTML = html;
+  }
+
+  function section(title, items) {
+    return `<div class="section-label">${title}</div>` + items.map(card).join("");
+  }
+
+  function card(e) {
+    const days = e.days;
+    const age  = nextAge(e.date);
+    const dateStr = formatDate(e.date);
+    const colorClass = "c" + (e.colorIndex ?? 0);
+
+    let countdownHtml;
+    if (days === 0) {
+      countdownHtml = `<div class="countdown today">
+        <div class="countdown-days">🎂</div>
+        <span class="badge-today">${age}. Geburtstag!</span>
+      </div>`;
+    } else {
+      const label = days === 1 ? "Tag" : "Tage";
+      const soonClass = days <= 7 ? " soon" : "";
+      countdownHtml = `<div class="countdown${soonClass}">
+        <div class="countdown-days">${days}</div>
+        <div class="countdown-label">${label}</div>
+      </div>`;
+    }
+
+    return `<div class="card" data-id="${e.id}">
+      <div class="avatar ${colorClass}">${e.emoji}</div>
+      <div class="card-info">
+        <div class="card-name">${esc(e.name)}</div>
+        <div class="card-date">${dateStr} · wird ${age}</div>
+      </div>
+      ${countdownHtml}
+      <button class="btn-delete" onclick="deleteEntry('${e.id}')" title="Löschen">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+          <path d="M6.5 1.5A1.5 1.5 0 0 1 8 0h2a1.5 1.5 0 0 1 1.5 1.5V2h3a.75.75 0 0 1 0 1.5h-.5l-.7 11.2A2 2 0 0 1 11.3 16.5H6.7a2 2 0 0 1-2-1.8L4 3.5H3.5A.75.75 0 0 1 3.5 2h3v-.5zm1.5 0V2h2v-.5A.5.5 0 0 0 10 1H8a.5.5 0 0 0-.5.5zM5.5 3.5l.69 10.9a.5.5 0 0 0 .5.6h4.62a.5.5 0 0 0 .5-.6L12.5 3.5h-7z"/>
+        </svg>
+      </button>
+    </div>`;
+  }
+
+  // ── DATE HELPERS ──────────────────────────────────────────────────────
+  function toDateOnly(d) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
+  function daysUntil(dateStr) {
+    const today = toDateOnly(new Date());
+    const [y, m, d] = dateStr.split("-").map(Number);
+    let next = new Date(today.getFullYear(), m - 1, d);
+    if (next < today) next.setFullYear(today.getFullYear() + 1);
+    return Math.round((next - today) / 86400000);
+  }
+
+  function nextAge(dateStr) {
+    const today = toDateOnly(new Date());
+    const [y, m, d] = dateStr.split("-").map(Number);
+    let next = new Date(today.getFullYear(), m - 1, d);
+    if (next < today) next.setFullYear(today.getFullYear() + 1);
+    return next.getFullYear() - y;
+  }
+
+  function formatDate(dateStr) {
+    const [y, m, d] = dateStr.split("-").map(Number);
+    return `${d}. ${["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"][m-1]} ${y}`;
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  // ── MODAL ─────────────────────────────────────────────────────────────
+  function openModal() {
+    document.getElementById("overlay").classList.add("visible");
+    document.getElementById("input-name").focus();
+  }
+
+  function closeModal() {
+    document.getElementById("overlay").classList.remove("visible");
+    document.getElementById("input-name").value = "";
+    document.getElementById("input-date").value = "";
+    selectedEmoji = EMOJIS[0];
+    updateEmojiPicker();
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById("overlay")) closeModal();
+  }
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeModal();
+  });
+
+  // ── EMOJI PICKER ──────────────────────────────────────────────────────
+  function buildEmojiPicker() {
+    const row = document.getElementById("emoji-picker");
+    row.innerHTML = EMOJIS.map(em => `
+      <button class="emoji-btn ${em === selectedEmoji ? "selected" : ""}"
+              onclick="selectEmoji('${em}')">${em}</button>
+    `).join("");
+  }
+
+  function updateEmojiPicker() {
+    document.querySelectorAll(".emoji-btn").forEach(btn => {
+      btn.classList.toggle("selected", btn.textContent === selectedEmoji);
+    });
+  }
+
+  function selectEmoji(em) {
+    selectedEmoji = em;
+    updateEmojiPicker();
+  }
+
+  // ── CRUD ──────────────────────────────────────────────────────────────
+  function saveEntry() {
+    const name = document.getElementById("input-name").value.trim();
+    const date = document.getElementById("input-date").value;
+
+    if (!name) { shake("input-name"); return; }
+    if (!date) { shake("input-date"); return; }
+
+    const entry = {
+      id: crypto.randomUUID(),
+      name,
+      date,
+      emoji: selectedEmoji,
+      colorIndex: Math.floor(Math.random() * COLORS)
+    };
+
+    entries.push(entry);
+    save();
+    render();
+    closeModal();
+  }
+
+  function deleteEntry(id) {
+    entries = entries.filter(e => e.id !== id);
+    save();
+    render();
+  }
+
+  function save() {
+    localStorage.setItem("geburtstage", JSON.stringify(entries));
+  }
+
+  function shake(id) {
+    const el = document.getElementById(id);
+    el.style.borderColor = "var(--danger)";
+    el.animate([
+      { transform: "translateX(0)" },
+      { transform: "translateX(-6px)" },
+      { transform: "translateX(6px)" },
+      { transform: "translateX(-4px)" },
+      { transform: "translateX(0)" }
+    ], { duration: 300, easing: "ease-out" });
+    setTimeout(() => el.style.borderColor = "", 800);
+  }
+
+  // ── INIT ──────────────────────────────────────────────────────────────
+  buildEmojiPicker();
+  render();
+</script>
+</body>
+</html>
