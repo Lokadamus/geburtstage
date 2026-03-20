@@ -287,22 +287,50 @@
   </div>
 </div>
 
-<script type="module">
-  import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, getDocs }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script>
+  // ── Firestore REST API (kein SDK nötig) ───────────────────────────
+  const PROJECT = "geburtstage-c3e2b";
+  const BASE    = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents/geburtstage`;
 
-  // ── Firebase ──────────────────────────────────────────────────────
-  const app = initializeApp({
-    apiKey:            "AIzaSyC7JeNtSTcVxeU87jtZRYb5eUCvys2Dlnk",
-    authDomain:        "geburtstage-c3e2b.firebaseapp.com",
-    projectId:         "geburtstage-c3e2b",
-    storageBucket:     "geburtstage-c3e2b.firebasestorage.app",
-    messagingSenderId: "842500657029",
-    appId:             "1:842500657029:web:a64934a372434e6805feec"
-  });
-  const db  = getFirestore(app);
-  const col = collection(db, "geburtstage");
+  function parseDoc(doc) {
+    const id = doc.name.split("/").pop();
+    const f  = doc.fields || {};
+    return {
+      id,
+      name:       f.name?.stringValue  || "",
+      date:       f.date?.stringValue  || "",
+      emoji:      f.emoji?.stringValue || "🎂",
+      colorIndex: parseInt(f.colorIndex?.integerValue ?? 0)
+    };
+  }
+
+  function toBody(e) {
+    return JSON.stringify({ fields: {
+      name:       { stringValue:  e.name },
+      date:       { stringValue:  e.date },
+      emoji:      { stringValue:  e.emoji },
+      colorIndex: { integerValue: e.colorIndex }
+    }});
+  }
+
+  async function fsLoad() {
+    const res  = await fetch(BASE);
+    const data = await res.json();
+    return (data.documents || []).map(parseDoc);
+  }
+
+  async function fsAdd(e) {
+    await fetch(BASE, { method:"POST", headers:{"Content-Type":"application/json"}, body: toBody(e) });
+  }
+
+  async function fsUpdate(id, e) {
+    const mask = "updateMask.fieldPaths=name&updateMask.fieldPaths=date&updateMask.fieldPaths=emoji";
+    await fetch(`${BASE}/${id}?${mask}`, { method:"PATCH", headers:{"Content-Type":"application/json"}, body: toBody(e) });
+  }
+
+  async function fsDelete(id) {
+    await fetch(`${BASE}/${id}`, { method:"DELETE" });
+  }
 
   // ── Defaults (einmalig wenn DB leer) ─────────────────────────────
   const DEFAULTS = [
@@ -311,14 +339,6 @@
     { name:"Marc Pichlhofer",    date:"2007-03-23", emoji:"🎉", colorIndex:3 },
     { name:"Sven Pichlhofer",    date:"2004-04-28", emoji:"🌟", colorIndex:4 }
   ];
-
-  async function seedIfEmpty() {
-    const snap = await getDocs(col);
-    if (snap.empty) {
-      for (const d of DEFAULTS) await addDoc(col, d);
-    }
-  }
-  seedIfEmpty();
 
   // ── Constants ─────────────────────────────────────────────────────
   const EMOJIS   = ["🎂","🎉","🎈","🥳","🌟","💫","🦋","🌸","🌈","🎁","🦄","🐶","🐱","🌺","🍀","⭐"];
@@ -329,14 +349,25 @@
   let selectedEmoji = EMOJIS[0];
   let editId        = null;
 
-  // ── Echtzeit-Listener ─────────────────────────────────────────────
-  onSnapshot(col, snap => {
-    entries = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    render();
-  }, err => {
-    document.getElementById("list-container").innerHTML =
-      `<div class="empty"><div class="emoji">⚠️</div><p><strong>Fehler</strong>${err.code}: ${err.message}</p></div>`;
-  });
+  // ── Laden & Refresh ───────────────────────────────────────────────
+  async function reload() {
+    try {
+      entries = await fsLoad();
+      // Seed wenn leer
+      if (entries.length === 0) {
+        for (const d of DEFAULTS) await fsAdd(d);
+        entries = await fsLoad();
+      }
+      render();
+    } catch (err) {
+      document.getElementById("list-container").innerHTML =
+        `<div class="empty"><div class="emoji">⚠️</div><p><strong>Fehler beim Laden</strong>${err.message}</p></div>`;
+    }
+  }
+
+  // Beim Start laden, danach alle 60s automatisch aktualisieren
+  reload();
+  setInterval(reload, 60000);
 
   // ── Datum-Hilfsfunktionen ─────────────────────────────────────────
   function today0() { const d = new Date(); d.setHours(0,0,0,0); return d; }
@@ -506,18 +537,20 @@
 
     try {
       if (editId) {
-        await updateDoc(doc(db, "geburtstage", editId), { name, date, emoji: selectedEmoji });
+        await fsUpdate(editId, { name, date, emoji: selectedEmoji });
       } else {
-        await addDoc(col, { name, date, emoji: selectedEmoji, colorIndex: Math.floor(Math.random() * N_COLORS) });
+        await fsAdd({ name, date, emoji: selectedEmoji, colorIndex: Math.floor(Math.random() * N_COLORS) });
       }
       window.closeModal();
+      await reload();
     } finally {
       btn.disabled = false;
     }
   };
 
   window.deleteEntry = async (id) => {
-    await deleteDoc(doc(db, "geburtstage", id));
+    await fsDelete(id);
+    await reload();
   };
 
   function shake(id) {
@@ -532,6 +565,6 @@
   }
 
   buildEmojiPicker();
-</script>
+  </script>
 </body>
 </html>
