@@ -308,12 +308,15 @@
   }
 
   function toBody(e) {
-    return JSON.stringify({ fields: {
-      name:       { stringValue:  e.name },
-      date:       { stringValue:  e.date },
-      emoji:      { stringValue:  e.emoji },
-      colorIndex: { integerValue: e.colorIndex }
-    }});
+    const fields = {
+      name:  { stringValue: e.name },
+      date:  { stringValue: e.date },
+      emoji: { stringValue: e.emoji },
+    };
+    if (e.colorIndex !== undefined) {
+      fields.colorIndex = { integerValue: String(e.colorIndex) };
+    }
+    return JSON.stringify({ fields });
   }
 
   async function fsLoad() {
