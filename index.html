@@ -548,6 +548,8 @@
       }
       window.closeModal();
       await reload();
+    } catch (err) {
+      alert("Fehler beim Speichern:\n" + err.message);
     } finally {
       btn.disabled = false;
     }
